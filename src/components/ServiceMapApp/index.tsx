@@ -16,6 +16,7 @@ import { ServiceMapArrowsRenderer } from '~/components/ServiceMapArrowRenderer';
 import { WelcomeScreen } from './WelcomeScreen';
 
 import { Verdict, TCPFlagName, PodSelector } from '~/domain/hubble';
+import { Application } from '~/domain/common';
 import { ServiceCard } from '~/domain/service-map';
 import { KV, Labels } from '~/domain/labels';
 import { FilterEntry, FilterDirection } from '~/domain/filtering';
@@ -166,6 +167,8 @@ export const ServiceMapApp = observer(function ServiceMapApp() {
       onShowRemoteNodeToggle={() => ui.controls.toggleShowRemoteNode()}
       showPrometheusApp={store.controls.showPrometheusApp}
       onShowPrometheusAppToggle={() => ui.controls.toggleShowPrometheusApp()}
+      currentApp={Application.ServiceMap}
+      onAppChange={app => ui.controls.applicationChanged(app)}
     />
   );
 

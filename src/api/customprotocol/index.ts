@@ -5,6 +5,7 @@ import { Filters } from '~/domain/filtering';
 
 import { ControlStream } from './control-stream';
 import { ServiceMapStream } from './service-map-stream';
+import { PoliciesRequest } from './policies';
 
 export type Options = BaseOptions & {};
 
@@ -30,6 +31,15 @@ export class BackendAPI extends CustomProtocolAPI {
       }),
     );
   }
+
+  public policies(namespace: string): PoliciesRequest {
+    return new PoliciesRequest(
+      this.streamOpts({
+        route: 'policies',
+        namespace,
+      }),
+    );
+  }
 }
 
-export { ControlStream, ServiceMapStream };
+export { ControlStream, ServiceMapStream, PoliciesRequest };

@@ -9,6 +9,7 @@ import { NamespaceDescriptor } from '~/domain/namespaces';
 
 import { ControlStore } from './controls';
 import { NamespaceStore } from './namespace';
+import { PolicyStore } from './policies';
 import { SettingsStore } from './ui-settings';
 
 import { StoreFrame, EventKind as FrameEvent } from '~/store/frame';
@@ -29,6 +30,13 @@ export class Store {
 
   public currentFrame: StoreFrame;
 
+  // NOTE: The policy view draws cards built from network policies instead of
+  // flows, so it keeps them in a frame of its own and never touches the live
+  // frames above.
+  public policyFrame: StoreFrame;
+
+  public policies: PolicyStore;
+
   public namespaces: NamespaceStore;
 
   public uiSettings: SettingsStore;
@@ -39,9 +47,11 @@ export class Store {
     this.controls = new ControlStore();
     this.namespaces = new NamespaceStore();
     this.uiSettings = new SettingsStore(true);
+    this.policies = new PolicyStore();
 
     this.globalFrame = StoreFrame.emptyWithShared(this.controls, this.namespaces);
     this.currentFrame = StoreFrame.emptyWithShared(this.controls, this.namespaces);
+    this.policyFrame = StoreFrame.emptyWithShared(this.controls, this.namespaces);
 
     this.setupEventHandlers();
     this.setupDebugTools();

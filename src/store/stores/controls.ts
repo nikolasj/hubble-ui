@@ -168,6 +168,7 @@ export class ControlStore {
   get app() {
     return {
       isServiceMap: this.currentApp === Application.ServiceMap,
+      isPolicyMap: this.currentApp === Application.PolicyMap,
     };
   }
 }

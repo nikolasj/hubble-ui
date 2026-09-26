@@ -9,6 +9,7 @@ import { Application } from '~/domain/common';
 import { StatusCenter } from './status-center';
 import { Controls } from './controls';
 import { ServiceMap } from './service-map';
+import { PolicyMap } from './policy-map';
 
 import { CommonUtils, Options } from './common';
 import { ConnectEvent } from '~/data-layer/connect-event';
@@ -24,6 +25,7 @@ export class UILayer {
   public readonly statusCenter: StatusCenter;
   public readonly controls: Controls;
   public readonly serviceMap: ServiceMap;
+  public readonly policyMap: PolicyMap;
 
   private readonly transferState: TransferState;
 
@@ -44,6 +46,7 @@ export class UILayer {
 
     this.controls = new Controls(this.commonOpts);
     this.serviceMap = new ServiceMap(this.commonOpts);
+    this.policyMap = new PolicyMap(this.commonOpts);
 
     this.setupEventHandlers();
   }
@@ -166,6 +169,7 @@ export class UILayer {
     console.log(`appToggled`, prevApp, nextApp, isChanged);
 
     await this.serviceMap.appToggled(prevApp, nextApp);
+    await this.policyMap.appToggled(prevApp, nextApp);
   }
 
   private applyLocalParameters(): void {

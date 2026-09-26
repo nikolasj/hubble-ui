@@ -14,6 +14,7 @@ import { fn } from '~/utils';
 
 import { StorageParameters, Options } from './common';
 import { Controls } from './controls';
+import { PolicyMap } from './policy-map';
 import { ServiceMap } from './service-map';
 
 export enum Event {
@@ -35,6 +36,7 @@ export type BuildOptions = {
 export class DataLayer extends EventEmitter<Handlers> {
   public readonly controls: Controls;
   public readonly serviceMap: ServiceMap;
+  public readonly policyMap: PolicyMap;
   public readonly transferState: TransferState;
 
   public static readonly QueryParamsHeaderName = 'x-hubble-ui-page-query';
@@ -66,6 +68,7 @@ export class DataLayer extends EventEmitter<Handlers> {
     this.transferState = new TransferState();
     this.controls = new Controls(this.commonOpts);
     this.serviceMap = new ServiceMap(this.commonOpts);
+    this.policyMap = new PolicyMap(this.commonOpts);
 
     this.setupEventHandlers();
     this.setupDebugProps();
@@ -80,11 +83,11 @@ export class DataLayer extends EventEmitter<Handlers> {
   }
 
   public async dropDataFetch() {
-    await this.serviceMap.dropDataFetch();
+    await Promise.all([this.serviceMap.dropDataFetch(), this.policyMap.dropFetch()]);
   }
 
   public async filtersChanged(f: FiltersDiff) {
-    await Promise.all([this.serviceMap.filtersChanged(f)]);
+    await Promise.all([this.serviceMap.filtersChanged(f), this.policyMap.filtersChanged(f)]);
   }
 
   public readLocalStorageParams(): StorageParameters {

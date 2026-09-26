@@ -6,7 +6,9 @@ import { FilterEntry } from '~/domain/filtering';
 import { Status } from '~/domain/status';
 import { TransferState } from '~/domain/interactions';
 import { NamespaceDescriptor } from '~/domain/namespaces';
+import { Application } from '~/domain/common';
 
+import { AppSwitcher } from './AppSwitcher';
 import { FlowsFilterInput } from './FlowsFilterInput';
 import { VerdictFilterDropdown } from './VerdictFilterDropdown';
 import { VisualFiltersDropdown } from './VisualFiltersDropdown';
@@ -35,6 +37,10 @@ export interface Props {
   onShowRemoteNodeToggle?: () => void;
   showPrometheusApp: boolean;
   onShowPrometheusAppToggle: () => void;
+  currentApp?: Application;
+  onAppChange?: (app: Application) => void;
+  // NOTE: The policy view has no flows, so it hides the flow related controls
+  hideFlowControls?: boolean;
 }
 
 export const TopBar = observer(function TopBar(props: Props) {
@@ -69,7 +75,13 @@ export const TopBar = observer(function TopBar(props: Props) {
             onChange={props.onNamespaceChange}
           />
         )}
-        {props.currentNamespace && RenderedFilters}
+        {props.currentApp != null && props.currentNamespace && (
+          <>
+            <div className={css.spacer} />
+            <AppSwitcher currentApp={props.currentApp} onAppChange={props.onAppChange} />
+          </>
+        )}
+        {props.currentNamespace && !props.hideFlowControls && RenderedFilters}
       </div>
       <div className={css.right}>
         <div className={css.spacer} />

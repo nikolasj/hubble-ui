@@ -21,6 +21,11 @@ export const AccessPoint = observer(function AccessPoint(props: Props) {
 
   const showL7Protocol = props.l7Protocol != null && props.l7Protocol !== L7Kind.Unknown;
 
+  // NOTE: Policy rules without ports or protocol apply to any of them
+  const portLabel = props.port > 0 ? props.port : 'any';
+  const protocolLabel =
+    props.l4Protocol === IPProtocol.Unknown ? 'any' : IPProtocol[props.l4Protocol];
+
   useLayoutEffect(() => {
     if (props.connectorRef == null || connectorRef.current == null) return;
     props.connectorRef.current = connectorRef.current;
@@ -41,11 +46,11 @@ export const AccessPoint = observer(function AccessPoint(props: Props) {
       <div className={css.data}>
         {showPort && (
           <>
-            <div className={css.port}>{props.port}</div>
+            <div className={css.port}>{portLabel}</div>
             <div className={css.dot} />
           </>
         )}
-        <div className={css.protocol}>{IPProtocol[props.l4Protocol]}</div>
+        <div className={css.protocol}>{protocolLabel}</div>
 
         {props.l7Protocol && showL7Protocol && (
           <>

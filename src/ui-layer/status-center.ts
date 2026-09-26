@@ -188,6 +188,23 @@ export class StatusCenter extends EventEmitter<Handlers> {
     });
   }
 
+  public pushPoliciesFetchErrors(errs: CustomError[]) {
+    errs.forEach(err => {
+      const title = err.isPermissionDenied
+        ? 'Hubble UI is not allowed to read network policies'
+        : 'Failed to load network policies';
+
+      const entry = StatusEntryBuilder.new()
+        .setIntent(Intent.Error)
+        .setTitle(title)
+        .setComponent(Component.HubbleUI)
+        .setDetails(err.toString())
+        .build();
+
+      this.pushEntry(entry);
+    });
+  }
+
   public pushControlStreamError(err: CustomError) {
     const entry = StatusEntryBuilder.new()
       .setIntent(Intent.Critical)

@@ -22,6 +22,7 @@ import { TransactionRunner } from './transaction';
 
 export enum ApplicationPath {
   ServiceMap = '/',
+  PolicyMap = '/policies',
 }
 
 export enum Event {
@@ -227,6 +228,8 @@ export class Router extends EventEmitter<Handlers> {
     switch (app) {
       case Application.ServiceMap:
         return ApplicationPath.ServiceMap;
+      case Application.PolicyMap:
+        return ApplicationPath.PolicyMap;
       default:
         console.error(`cannot match application "${app}" to route`);
         return ApplicationPath.ServiceMap;
@@ -236,10 +239,10 @@ export class Router extends EventEmitter<Handlers> {
   private getApplicationByPath(p: string | null): Application {
     const firstPart = (p || '').split('/').find(part => part.trim().length > 0) || '';
 
-    switch (firstPart) {
-      case '':
+    switch (`/${firstPart}`) {
+      case ApplicationPath.PolicyMap:
+        return Application.PolicyMap;
       case ApplicationPath.ServiceMap:
-        return Application.ServiceMap;
       default:
         return Application.ServiceMap;
     }

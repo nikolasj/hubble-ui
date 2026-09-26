@@ -59,6 +59,14 @@ $heading-max-width: calc(100% - var(--endpoint-icon-width) - #{$icon-side-paddin
   color: #969696;
 }
 
+.policyNote {
+  @include ellipsis-limit;
+
+  font-size: 14px;
+  font-weight: 600;
+  color: #c23030;
+}
+
 .settingsIcon {
   @include column(flex-start);
   align-self: flex-start;
