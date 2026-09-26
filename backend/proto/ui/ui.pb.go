@@ -212,6 +212,244 @@ func (StateChange) EnumDescriptor() ([]byte, []int) {
 	return file_ui_ui_proto_rawDescGZIP(), []int{2}
 }
 
+// GetPoliciesRequest asks for a static access graph of a namespace built from
+// the network policies that apply to it, instead of from observed flows.
+type GetPoliciesRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Namespace     string                 `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetPoliciesRequest) Reset() {
+	*x = GetPoliciesRequest{}
+	mi := &file_ui_ui_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetPoliciesRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetPoliciesRequest) ProtoMessage() {}
+
+func (x *GetPoliciesRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_ui_ui_proto_msgTypes[0]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetPoliciesRequest.ProtoReflect.Descriptor instead.
+func (*GetPoliciesRequest) Descriptor() ([]byte, []int) {
+	return file_ui_ui_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *GetPoliciesRequest) GetNamespace() string {
+	if x != nil {
+		return x.Namespace
+	}
+	return ""
+}
+
+type GetPoliciesResponse struct {
+	state    protoimpl.MessageState `protogen:"open.v1"`
+	Policies []*PolicyObject        `protobuf:"bytes,1,rep,name=policies,proto3" json:"policies,omitempty"`
+	// Cards and links that describe the accesses the policies allow or deny.
+	// They reuse the service map messages so that the frontend can draw them
+	// with the same renderer.
+	Services []*Service     `protobuf:"bytes,2,rep,name=services,proto3" json:"services,omitempty"`
+	Links    []*ServiceLink `protobuf:"bytes,3,rep,name=links,proto3" json:"links,omitempty"`
+	// Non-fatal problems, e.g. a policy kind that could not be listed.
+	Warnings      []string `protobuf:"bytes,4,rep,name=warnings,proto3" json:"warnings,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetPoliciesResponse) Reset() {
+	*x = GetPoliciesResponse{}
+	mi := &file_ui_ui_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetPoliciesResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetPoliciesResponse) ProtoMessage() {}
+
+func (x *GetPoliciesResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_ui_ui_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetPoliciesResponse.ProtoReflect.Descriptor instead.
+func (*GetPoliciesResponse) Descriptor() ([]byte, []int) {
+	return file_ui_ui_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *GetPoliciesResponse) GetPolicies() []*PolicyObject {
+	if x != nil {
+		return x.Policies
+	}
+	return nil
+}
+
+func (x *GetPoliciesResponse) GetServices() []*Service {
+	if x != nil {
+		return x.Services
+	}
+	return nil
+}
+
+func (x *GetPoliciesResponse) GetLinks() []*ServiceLink {
+	if x != nil {
+		return x.Links
+	}
+	return nil
+}
+
+func (x *GetPoliciesResponse) GetWarnings() []string {
+	if x != nil {
+		return x.Warnings
+	}
+	return nil
+}
+
+type PolicyObject struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// CiliumNetworkPolicy, CiliumClusterwideNetworkPolicy or NetworkPolicy
+	Kind string `protobuf:"bytes,1,opt,name=kind,proto3" json:"kind,omitempty"`
+	Name string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	// Empty for cluster-wide policies.
+	Namespace       string `protobuf:"bytes,3,opt,name=namespace,proto3" json:"namespace,omitempty"`
+	Uid             string `protobuf:"bytes,4,opt,name=uid,proto3" json:"uid,omitempty"`
+	ResourceVersion string `protobuf:"bytes,5,opt,name=resource_version,json=resourceVersion,proto3" json:"resource_version,omitempty"`
+	Description     string `protobuf:"bytes,6,opt,name=description,proto3" json:"description,omitempty"`
+	Yaml            string `protobuf:"bytes,7,opt,name=yaml,proto3" json:"yaml,omitempty"`
+	// Ids of services and links in GetPoliciesResponse produced from this policy.
+	ServiceIds []string `protobuf:"bytes,8,rep,name=service_ids,json=serviceIds,proto3" json:"service_ids,omitempty"`
+	LinkIds    []string `protobuf:"bytes,9,rep,name=link_ids,json=linkIds,proto3" json:"link_ids,omitempty"`
+	// Set when the policy could not be turned into a graph.
+	ParseError    string `protobuf:"bytes,10,opt,name=parse_error,json=parseError,proto3" json:"parse_error,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PolicyObject) Reset() {
+	*x = PolicyObject{}
+	mi := &file_ui_ui_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PolicyObject) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PolicyObject) ProtoMessage() {}
+
+func (x *PolicyObject) ProtoReflect() protoreflect.Message {
+	mi := &file_ui_ui_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PolicyObject.ProtoReflect.Descriptor instead.
+func (*PolicyObject) Descriptor() ([]byte, []int) {
+	return file_ui_ui_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *PolicyObject) GetKind() string {
+	if x != nil {
+		return x.Kind
+	}
+	return ""
+}
+
+func (x *PolicyObject) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *PolicyObject) GetNamespace() string {
+	if x != nil {
+		return x.Namespace
+	}
+	return ""
+}
+
+func (x *PolicyObject) GetUid() string {
+	if x != nil {
+		return x.Uid
+	}
+	return ""
+}
+
+func (x *PolicyObject) GetResourceVersion() string {
+	if x != nil {
+		return x.ResourceVersion
+	}
+	return ""
+}
+
+func (x *PolicyObject) GetDescription() string {
+	if x != nil {
+		return x.Description
+	}
+	return ""
+}
+
+func (x *PolicyObject) GetYaml() string {
+	if x != nil {
+		return x.Yaml
+	}
+	return ""
+}
+
+func (x *PolicyObject) GetServiceIds() []string {
+	if x != nil {
+		return x.ServiceIds
+	}
+	return nil
+}
+
+func (x *PolicyObject) GetLinkIds() []string {
+	if x != nil {
+		return x.LinkIds
+	}
+	return nil
+}
+
+func (x *PolicyObject) GetParseError() string {
+	if x != nil {
+		return x.ParseError
+	}
+	return ""
+}
+
 // Here I didn't include "follow", "until", and "number". This request assumes follow,
 // and lets the client decide when to end the request, whether it's based on timestamp
 // or the number of responses received.
@@ -230,7 +468,7 @@ type GetEventsRequest struct {
 
 func (x *GetEventsRequest) Reset() {
 	*x = GetEventsRequest{}
-	mi := &file_ui_ui_proto_msgTypes[0]
+	mi := &file_ui_ui_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -242,7 +480,7 @@ func (x *GetEventsRequest) String() string {
 func (*GetEventsRequest) ProtoMessage() {}
 
 func (x *GetEventsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_ui_ui_proto_msgTypes[0]
+	mi := &file_ui_ui_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -255,7 +493,7 @@ func (x *GetEventsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetEventsRequest.ProtoReflect.Descriptor instead.
 func (*GetEventsRequest) Descriptor() ([]byte, []int) {
-	return file_ui_ui_proto_rawDescGZIP(), []int{0}
+	return file_ui_ui_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *GetEventsRequest) GetEventTypes() []EventType {
@@ -304,7 +542,7 @@ type GetEventsResponse struct {
 
 func (x *GetEventsResponse) Reset() {
 	*x = GetEventsResponse{}
-	mi := &file_ui_ui_proto_msgTypes[1]
+	mi := &file_ui_ui_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -316,7 +554,7 @@ func (x *GetEventsResponse) String() string {
 func (*GetEventsResponse) ProtoMessage() {}
 
 func (x *GetEventsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_ui_ui_proto_msgTypes[1]
+	mi := &file_ui_ui_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -329,7 +567,7 @@ func (x *GetEventsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetEventsResponse.ProtoReflect.Descriptor instead.
 func (*GetEventsResponse) Descriptor() ([]byte, []int) {
-	return file_ui_ui_proto_rawDescGZIP(), []int{1}
+	return file_ui_ui_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *GetEventsResponse) GetNode() string {
@@ -370,7 +608,7 @@ type Event struct {
 
 func (x *Event) Reset() {
 	*x = Event{}
-	mi := &file_ui_ui_proto_msgTypes[2]
+	mi := &file_ui_ui_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -382,7 +620,7 @@ func (x *Event) String() string {
 func (*Event) ProtoMessage() {}
 
 func (x *Event) ProtoReflect() protoreflect.Message {
-	mi := &file_ui_ui_proto_msgTypes[2]
+	mi := &file_ui_ui_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -395,7 +633,7 @@ func (x *Event) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Event.ProtoReflect.Descriptor instead.
 func (*Event) Descriptor() ([]byte, []int) {
-	return file_ui_ui_proto_rawDescGZIP(), []int{2}
+	return file_ui_ui_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *Event) GetEvent() isEvent_Event {
@@ -514,7 +752,7 @@ type Flows struct {
 
 func (x *Flows) Reset() {
 	*x = Flows{}
-	mi := &file_ui_ui_proto_msgTypes[3]
+	mi := &file_ui_ui_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -526,7 +764,7 @@ func (x *Flows) String() string {
 func (*Flows) ProtoMessage() {}
 
 func (x *Flows) ProtoReflect() protoreflect.Message {
-	mi := &file_ui_ui_proto_msgTypes[3]
+	mi := &file_ui_ui_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -539,7 +777,7 @@ func (x *Flows) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Flows.ProtoReflect.Descriptor instead.
 func (*Flows) Descriptor() ([]byte, []int) {
-	return file_ui_ui_proto_rawDescGZIP(), []int{3}
+	return file_ui_ui_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *Flows) GetFlows() []*flow.Flow {
@@ -566,7 +804,7 @@ type EventFilter struct {
 
 func (x *EventFilter) Reset() {
 	*x = EventFilter{}
-	mi := &file_ui_ui_proto_msgTypes[4]
+	mi := &file_ui_ui_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -578,7 +816,7 @@ func (x *EventFilter) String() string {
 func (*EventFilter) ProtoMessage() {}
 
 func (x *EventFilter) ProtoReflect() protoreflect.Message {
-	mi := &file_ui_ui_proto_msgTypes[4]
+	mi := &file_ui_ui_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -591,7 +829,7 @@ func (x *EventFilter) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use EventFilter.ProtoReflect.Descriptor instead.
 func (*EventFilter) Descriptor() ([]byte, []int) {
-	return file_ui_ui_proto_rawDescGZIP(), []int{4}
+	return file_ui_ui_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *EventFilter) GetFilter() isEventFilter_Filter {
@@ -661,7 +899,7 @@ type NamespaceDescriptor struct {
 
 func (x *NamespaceDescriptor) Reset() {
 	*x = NamespaceDescriptor{}
-	mi := &file_ui_ui_proto_msgTypes[5]
+	mi := &file_ui_ui_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -673,7 +911,7 @@ func (x *NamespaceDescriptor) String() string {
 func (*NamespaceDescriptor) ProtoMessage() {}
 
 func (x *NamespaceDescriptor) ProtoReflect() protoreflect.Message {
-	mi := &file_ui_ui_proto_msgTypes[5]
+	mi := &file_ui_ui_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -686,7 +924,7 @@ func (x *NamespaceDescriptor) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use NamespaceDescriptor.ProtoReflect.Descriptor instead.
 func (*NamespaceDescriptor) Descriptor() ([]byte, []int) {
-	return file_ui_ui_proto_rawDescGZIP(), []int{5}
+	return file_ui_ui_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *NamespaceDescriptor) GetId() string {
@@ -720,7 +958,7 @@ type NamespaceState struct {
 
 func (x *NamespaceState) Reset() {
 	*x = NamespaceState{}
-	mi := &file_ui_ui_proto_msgTypes[6]
+	mi := &file_ui_ui_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -732,7 +970,7 @@ func (x *NamespaceState) String() string {
 func (*NamespaceState) ProtoMessage() {}
 
 func (x *NamespaceState) ProtoReflect() protoreflect.Message {
-	mi := &file_ui_ui_proto_msgTypes[6]
+	mi := &file_ui_ui_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -745,7 +983,7 @@ func (x *NamespaceState) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use NamespaceState.ProtoReflect.Descriptor instead.
 func (*NamespaceState) Descriptor() ([]byte, []int) {
-	return file_ui_ui_proto_rawDescGZIP(), []int{6}
+	return file_ui_ui_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *NamespaceState) GetNamespace() *NamespaceDescriptor {
@@ -786,7 +1024,7 @@ type Service struct {
 
 func (x *Service) Reset() {
 	*x = Service{}
-	mi := &file_ui_ui_proto_msgTypes[7]
+	mi := &file_ui_ui_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -798,7 +1036,7 @@ func (x *Service) String() string {
 func (*Service) ProtoMessage() {}
 
 func (x *Service) ProtoReflect() protoreflect.Message {
-	mi := &file_ui_ui_proto_msgTypes[7]
+	mi := &file_ui_ui_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -811,7 +1049,7 @@ func (x *Service) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Service.ProtoReflect.Descriptor instead.
 func (*Service) Descriptor() ([]byte, []int) {
-	return file_ui_ui_proto_rawDescGZIP(), []int{7}
+	return file_ui_ui_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *Service) GetId() string {
@@ -901,7 +1139,7 @@ type ServiceState struct {
 
 func (x *ServiceState) Reset() {
 	*x = ServiceState{}
-	mi := &file_ui_ui_proto_msgTypes[8]
+	mi := &file_ui_ui_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -913,7 +1151,7 @@ func (x *ServiceState) String() string {
 func (*ServiceState) ProtoMessage() {}
 
 func (x *ServiceState) ProtoReflect() protoreflect.Message {
-	mi := &file_ui_ui_proto_msgTypes[8]
+	mi := &file_ui_ui_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -926,7 +1164,7 @@ func (x *ServiceState) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ServiceState.ProtoReflect.Descriptor instead.
 func (*ServiceState) Descriptor() ([]byte, []int) {
-	return file_ui_ui_proto_rawDescGZIP(), []int{8}
+	return file_ui_ui_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *ServiceState) GetService() *Service {
@@ -952,7 +1190,7 @@ type ServiceFilter struct {
 
 func (x *ServiceFilter) Reset() {
 	*x = ServiceFilter{}
-	mi := &file_ui_ui_proto_msgTypes[9]
+	mi := &file_ui_ui_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -964,7 +1202,7 @@ func (x *ServiceFilter) String() string {
 func (*ServiceFilter) ProtoMessage() {}
 
 func (x *ServiceFilter) ProtoReflect() protoreflect.Message {
-	mi := &file_ui_ui_proto_msgTypes[9]
+	mi := &file_ui_ui_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -977,7 +1215,7 @@ func (x *ServiceFilter) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ServiceFilter.ProtoReflect.Descriptor instead.
 func (*ServiceFilter) Descriptor() ([]byte, []int) {
-	return file_ui_ui_proto_rawDescGZIP(), []int{9}
+	return file_ui_ui_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *ServiceFilter) GetNamespace() []string {
@@ -1009,7 +1247,7 @@ type ServiceLink struct {
 
 func (x *ServiceLink) Reset() {
 	*x = ServiceLink{}
-	mi := &file_ui_ui_proto_msgTypes[10]
+	mi := &file_ui_ui_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1021,7 +1259,7 @@ func (x *ServiceLink) String() string {
 func (*ServiceLink) ProtoMessage() {}
 
 func (x *ServiceLink) ProtoReflect() protoreflect.Message {
-	mi := &file_ui_ui_proto_msgTypes[10]
+	mi := &file_ui_ui_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1034,7 +1272,7 @@ func (x *ServiceLink) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ServiceLink.ProtoReflect.Descriptor instead.
 func (*ServiceLink) Descriptor() ([]byte, []int) {
-	return file_ui_ui_proto_rawDescGZIP(), []int{10}
+	return file_ui_ui_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *ServiceLink) GetId() string {
@@ -1124,7 +1362,7 @@ type ServiceLinkState struct {
 
 func (x *ServiceLinkState) Reset() {
 	*x = ServiceLinkState{}
-	mi := &file_ui_ui_proto_msgTypes[11]
+	mi := &file_ui_ui_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1136,7 +1374,7 @@ func (x *ServiceLinkState) String() string {
 func (*ServiceLinkState) ProtoMessage() {}
 
 func (x *ServiceLinkState) ProtoReflect() protoreflect.Message {
-	mi := &file_ui_ui_proto_msgTypes[11]
+	mi := &file_ui_ui_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1149,7 +1387,7 @@ func (x *ServiceLinkState) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ServiceLinkState.ProtoReflect.Descriptor instead.
 func (*ServiceLinkState) Descriptor() ([]byte, []int) {
-	return file_ui_ui_proto_rawDescGZIP(), []int{11}
+	return file_ui_ui_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *ServiceLinkState) GetServiceLink() *ServiceLink {
@@ -1179,7 +1417,7 @@ type ServiceLinkFilter struct {
 
 func (x *ServiceLinkFilter) Reset() {
 	*x = ServiceLinkFilter{}
-	mi := &file_ui_ui_proto_msgTypes[12]
+	mi := &file_ui_ui_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1191,7 +1429,7 @@ func (x *ServiceLinkFilter) String() string {
 func (*ServiceLinkFilter) ProtoMessage() {}
 
 func (x *ServiceLinkFilter) ProtoReflect() protoreflect.Message {
-	mi := &file_ui_ui_proto_msgTypes[12]
+	mi := &file_ui_ui_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1204,7 +1442,7 @@ func (x *ServiceLinkFilter) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ServiceLinkFilter.ProtoReflect.Descriptor instead.
 func (*ServiceLinkFilter) Descriptor() ([]byte, []int) {
-	return file_ui_ui_proto_rawDescGZIP(), []int{12}
+	return file_ui_ui_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *ServiceLinkFilter) GetSource() []*ServiceFilter {
@@ -1243,7 +1481,7 @@ type GetControlStreamRequest struct {
 
 func (x *GetControlStreamRequest) Reset() {
 	*x = GetControlStreamRequest{}
-	mi := &file_ui_ui_proto_msgTypes[13]
+	mi := &file_ui_ui_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1255,7 +1493,7 @@ func (x *GetControlStreamRequest) String() string {
 func (*GetControlStreamRequest) ProtoMessage() {}
 
 func (x *GetControlStreamRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_ui_ui_proto_msgTypes[13]
+	mi := &file_ui_ui_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1268,7 +1506,7 @@ func (x *GetControlStreamRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetControlStreamRequest.ProtoReflect.Descriptor instead.
 func (*GetControlStreamRequest) Descriptor() ([]byte, []int) {
-	return file_ui_ui_proto_rawDescGZIP(), []int{13}
+	return file_ui_ui_proto_rawDescGZIP(), []int{16}
 }
 
 type GetControlStreamResponse struct {
@@ -1284,7 +1522,7 @@ type GetControlStreamResponse struct {
 
 func (x *GetControlStreamResponse) Reset() {
 	*x = GetControlStreamResponse{}
-	mi := &file_ui_ui_proto_msgTypes[14]
+	mi := &file_ui_ui_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1296,7 +1534,7 @@ func (x *GetControlStreamResponse) String() string {
 func (*GetControlStreamResponse) ProtoMessage() {}
 
 func (x *GetControlStreamResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_ui_ui_proto_msgTypes[14]
+	mi := &file_ui_ui_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1309,7 +1547,7 @@ func (x *GetControlStreamResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetControlStreamResponse.ProtoReflect.Descriptor instead.
 func (*GetControlStreamResponse) Descriptor() ([]byte, []int) {
-	return file_ui_ui_proto_rawDescGZIP(), []int{14}
+	return file_ui_ui_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *GetControlStreamResponse) GetEvent() isGetControlStreamResponse_Event {
@@ -1364,7 +1602,7 @@ type ServiceLink_Latency struct {
 
 func (x *ServiceLink_Latency) Reset() {
 	*x = ServiceLink_Latency{}
-	mi := &file_ui_ui_proto_msgTypes[15]
+	mi := &file_ui_ui_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1376,7 +1614,7 @@ func (x *ServiceLink_Latency) String() string {
 func (*ServiceLink_Latency) ProtoMessage() {}
 
 func (x *ServiceLink_Latency) ProtoReflect() protoreflect.Message {
-	mi := &file_ui_ui_proto_msgTypes[15]
+	mi := &file_ui_ui_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1389,7 +1627,7 @@ func (x *ServiceLink_Latency) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ServiceLink_Latency.ProtoReflect.Descriptor instead.
 func (*ServiceLink_Latency) Descriptor() ([]byte, []int) {
-	return file_ui_ui_proto_rawDescGZIP(), []int{10, 0}
+	return file_ui_ui_proto_rawDescGZIP(), []int{13, 0}
 }
 
 func (x *ServiceLink_Latency) GetMin() *durationpb.Duration {
@@ -1422,7 +1660,7 @@ type GetControlStreamResponse_NamespaceStates struct {
 
 func (x *GetControlStreamResponse_NamespaceStates) Reset() {
 	*x = GetControlStreamResponse_NamespaceStates{}
-	mi := &file_ui_ui_proto_msgTypes[16]
+	mi := &file_ui_ui_proto_msgTypes[19]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1434,7 +1672,7 @@ func (x *GetControlStreamResponse_NamespaceStates) String() string {
 func (*GetControlStreamResponse_NamespaceStates) ProtoMessage() {}
 
 func (x *GetControlStreamResponse_NamespaceStates) ProtoReflect() protoreflect.Message {
-	mi := &file_ui_ui_proto_msgTypes[16]
+	mi := &file_ui_ui_proto_msgTypes[19]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1447,7 +1685,7 @@ func (x *GetControlStreamResponse_NamespaceStates) ProtoReflect() protoreflect.M
 
 // Deprecated: Use GetControlStreamResponse_NamespaceStates.ProtoReflect.Descriptor instead.
 func (*GetControlStreamResponse_NamespaceStates) Descriptor() ([]byte, []int) {
-	return file_ui_ui_proto_rawDescGZIP(), []int{14, 0}
+	return file_ui_ui_proto_rawDescGZIP(), []int{17, 0}
 }
 
 func (x *GetControlStreamResponse_NamespaceStates) GetNamespaces() []*NamespaceState {
@@ -1461,7 +1699,28 @@ var File_ui_ui_proto protoreflect.FileDescriptor
 
 const file_ui_ui_proto_rawDesc = "" +
 	"\n" +
-	"\vui/ui.proto\x12\x02ui\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1egoogle/protobuf/duration.proto\x1a\x0fflow/flow.proto\x1a\x16ui/notifications.proto\x1a\x0fui/status.proto\"\x8f\x02\n" +
+	"\vui/ui.proto\x12\x02ui\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1egoogle/protobuf/duration.proto\x1a\x0fflow/flow.proto\x1a\x16ui/notifications.proto\x1a\x0fui/status.proto\"2\n" +
+	"\x12GetPoliciesRequest\x12\x1c\n" +
+	"\tnamespace\x18\x01 \x01(\tR\tnamespace\"\xaf\x01\n" +
+	"\x13GetPoliciesResponse\x12,\n" +
+	"\bpolicies\x18\x01 \x03(\v2\x10.ui.PolicyObjectR\bpolicies\x12'\n" +
+	"\bservices\x18\x02 \x03(\v2\v.ui.ServiceR\bservices\x12%\n" +
+	"\x05links\x18\x03 \x03(\v2\x0f.ui.ServiceLinkR\x05links\x12\x1a\n" +
+	"\bwarnings\x18\x04 \x03(\tR\bwarnings\"\xa4\x02\n" +
+	"\fPolicyObject\x12\x12\n" +
+	"\x04kind\x18\x01 \x01(\tR\x04kind\x12\x12\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1c\n" +
+	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x10\n" +
+	"\x03uid\x18\x04 \x01(\tR\x03uid\x12)\n" +
+	"\x10resource_version\x18\x05 \x01(\tR\x0fresourceVersion\x12 \n" +
+	"\vdescription\x18\x06 \x01(\tR\vdescription\x12\x12\n" +
+	"\x04yaml\x18\a \x01(\tR\x04yaml\x12\x1f\n" +
+	"\vservice_ids\x18\b \x03(\tR\n" +
+	"serviceIds\x12\x19\n" +
+	"\blink_ids\x18\t \x03(\tR\alinkIds\x12\x1f\n" +
+	"\vparse_error\x18\n" +
+	" \x01(\tR\n" +
+	"parseError\"\x8f\x02\n" +
 	"\x10GetEventsRequest\x12.\n" +
 	"\vevent_types\x18\x01 \x03(\x0e2\r.ui.EventTypeR\n" +
 	"eventTypes\x12-\n" +
@@ -1576,11 +1835,12 @@ const file_ui_ui_proto_rawDesc = "" +
 	"\bMODIFIED\x10\x02\x12\v\n" +
 	"\aDELETED\x10\x03\x12\n" +
 	"\n" +
-	"\x06EXISTS\x10\x042\xcf\x01\n" +
+	"\x06EXISTS\x10\x042\x91\x02\n" +
 	"\x02UI\x12<\n" +
 	"\tGetEvents\x12\x14.ui.GetEventsRequest\x1a\x15.ui.GetEventsResponse\"\x000\x01\x12:\n" +
 	"\tGetStatus\x12\x14.ui.GetStatusRequest\x1a\x15.ui.GetStatusResponse\"\x00\x12O\n" +
-	"\x10GetControlStream\x12\x1b.ui.GetControlStreamRequest\x1a\x1c.ui.GetControlStreamResponse0\x01b\x06proto3"
+	"\x10GetControlStream\x12\x1b.ui.GetControlStreamRequest\x1a\x1c.ui.GetControlStreamResponse0\x01\x12@\n" +
+	"\vGetPolicies\x12\x16.ui.GetPoliciesRequest\x1a\x17.ui.GetPoliciesResponse\"\x00b\x06proto3"
 
 var (
 	file_ui_ui_proto_rawDescOnce sync.Once
@@ -1595,90 +1855,98 @@ func file_ui_ui_proto_rawDescGZIP() []byte {
 }
 
 var file_ui_ui_proto_enumTypes = make([]protoimpl.EnumInfo, 3)
-var file_ui_ui_proto_msgTypes = make([]protoimpl.MessageInfo, 17)
+var file_ui_ui_proto_msgTypes = make([]protoimpl.MessageInfo, 20)
 var file_ui_ui_proto_goTypes = []any{
 	(EventType)(0),                                   // 0: ui.EventType
 	(IPProtocol)(0),                                  // 1: ui.IPProtocol
 	(StateChange)(0),                                 // 2: ui.StateChange
-	(*GetEventsRequest)(nil),                         // 3: ui.GetEventsRequest
-	(*GetEventsResponse)(nil),                        // 4: ui.GetEventsResponse
-	(*Event)(nil),                                    // 5: ui.Event
-	(*Flows)(nil),                                    // 6: ui.Flows
-	(*EventFilter)(nil),                              // 7: ui.EventFilter
-	(*NamespaceDescriptor)(nil),                      // 8: ui.NamespaceDescriptor
-	(*NamespaceState)(nil),                           // 9: ui.NamespaceState
-	(*Service)(nil),                                  // 10: ui.Service
-	(*ServiceState)(nil),                             // 11: ui.ServiceState
-	(*ServiceFilter)(nil),                            // 12: ui.ServiceFilter
-	(*ServiceLink)(nil),                              // 13: ui.ServiceLink
-	(*ServiceLinkState)(nil),                         // 14: ui.ServiceLinkState
-	(*ServiceLinkFilter)(nil),                        // 15: ui.ServiceLinkFilter
-	(*GetControlStreamRequest)(nil),                  // 16: ui.GetControlStreamRequest
-	(*GetControlStreamResponse)(nil),                 // 17: ui.GetControlStreamResponse
-	(*ServiceLink_Latency)(nil),                      // 18: ui.ServiceLink.Latency
-	(*GetControlStreamResponse_NamespaceStates)(nil), // 19: ui.GetControlStreamResponse.NamespaceStates
-	(*timestamppb.Timestamp)(nil),                    // 20: google.protobuf.Timestamp
-	(*GetStatusRequest)(nil),                         // 21: ui.GetStatusRequest
-	(*flow.Flow)(nil),                                // 22: flow.Flow
-	(*Notification)(nil),                             // 23: ui.Notification
-	(*flow.FlowFilter)(nil),                          // 24: flow.FlowFilter
-	(*flow.Workload)(nil),                            // 25: flow.Workload
-	(flow.Verdict)(0),                                // 26: flow.Verdict
-	(flow.AuthType)(0),                               // 27: flow.AuthType
-	(*durationpb.Duration)(nil),                      // 28: google.protobuf.Duration
-	(*GetStatusResponse)(nil),                        // 29: ui.GetStatusResponse
+	(*GetPoliciesRequest)(nil),                       // 3: ui.GetPoliciesRequest
+	(*GetPoliciesResponse)(nil),                      // 4: ui.GetPoliciesResponse
+	(*PolicyObject)(nil),                             // 5: ui.PolicyObject
+	(*GetEventsRequest)(nil),                         // 6: ui.GetEventsRequest
+	(*GetEventsResponse)(nil),                        // 7: ui.GetEventsResponse
+	(*Event)(nil),                                    // 8: ui.Event
+	(*Flows)(nil),                                    // 9: ui.Flows
+	(*EventFilter)(nil),                              // 10: ui.EventFilter
+	(*NamespaceDescriptor)(nil),                      // 11: ui.NamespaceDescriptor
+	(*NamespaceState)(nil),                           // 12: ui.NamespaceState
+	(*Service)(nil),                                  // 13: ui.Service
+	(*ServiceState)(nil),                             // 14: ui.ServiceState
+	(*ServiceFilter)(nil),                            // 15: ui.ServiceFilter
+	(*ServiceLink)(nil),                              // 16: ui.ServiceLink
+	(*ServiceLinkState)(nil),                         // 17: ui.ServiceLinkState
+	(*ServiceLinkFilter)(nil),                        // 18: ui.ServiceLinkFilter
+	(*GetControlStreamRequest)(nil),                  // 19: ui.GetControlStreamRequest
+	(*GetControlStreamResponse)(nil),                 // 20: ui.GetControlStreamResponse
+	(*ServiceLink_Latency)(nil),                      // 21: ui.ServiceLink.Latency
+	(*GetControlStreamResponse_NamespaceStates)(nil), // 22: ui.GetControlStreamResponse.NamespaceStates
+	(*timestamppb.Timestamp)(nil),                    // 23: google.protobuf.Timestamp
+	(*GetStatusRequest)(nil),                         // 24: ui.GetStatusRequest
+	(*flow.Flow)(nil),                                // 25: flow.Flow
+	(*Notification)(nil),                             // 26: ui.Notification
+	(*flow.FlowFilter)(nil),                          // 27: flow.FlowFilter
+	(*flow.Workload)(nil),                            // 28: flow.Workload
+	(flow.Verdict)(0),                                // 29: flow.Verdict
+	(flow.AuthType)(0),                               // 30: flow.AuthType
+	(*durationpb.Duration)(nil),                      // 31: google.protobuf.Duration
+	(*GetStatusResponse)(nil),                        // 32: ui.GetStatusResponse
 }
 var file_ui_ui_proto_depIdxs = []int32{
-	0,  // 0: ui.GetEventsRequest.event_types:type_name -> ui.EventType
-	7,  // 1: ui.GetEventsRequest.blacklist:type_name -> ui.EventFilter
-	7,  // 2: ui.GetEventsRequest.whitelist:type_name -> ui.EventFilter
-	20, // 3: ui.GetEventsRequest.since:type_name -> google.protobuf.Timestamp
-	21, // 4: ui.GetEventsRequest.status_request:type_name -> ui.GetStatusRequest
-	20, // 5: ui.GetEventsResponse.timestamp:type_name -> google.protobuf.Timestamp
-	5,  // 6: ui.GetEventsResponse.events:type_name -> ui.Event
-	22, // 7: ui.Event.flow:type_name -> flow.Flow
-	9,  // 8: ui.Event.namespace_state:type_name -> ui.NamespaceState
-	11, // 9: ui.Event.service_state:type_name -> ui.ServiceState
-	14, // 10: ui.Event.service_link_state:type_name -> ui.ServiceLinkState
-	6,  // 11: ui.Event.flows:type_name -> ui.Flows
-	23, // 12: ui.Event.notification:type_name -> ui.Notification
-	22, // 13: ui.Flows.flows:type_name -> flow.Flow
-	24, // 14: ui.EventFilter.flow_filter:type_name -> flow.FlowFilter
-	12, // 15: ui.EventFilter.service_filter:type_name -> ui.ServiceFilter
-	15, // 16: ui.EventFilter.service_link_filter:type_name -> ui.ServiceLinkFilter
-	20, // 17: ui.NamespaceDescriptor.creation_timestamp:type_name -> google.protobuf.Timestamp
-	8,  // 18: ui.NamespaceState.namespace:type_name -> ui.NamespaceDescriptor
-	2,  // 19: ui.NamespaceState.type:type_name -> ui.StateChange
-	20, // 20: ui.Service.creation_timestamp:type_name -> google.protobuf.Timestamp
-	25, // 21: ui.Service.workloads:type_name -> flow.Workload
-	10, // 22: ui.ServiceState.service:type_name -> ui.Service
-	2,  // 23: ui.ServiceState.type:type_name -> ui.StateChange
-	1,  // 24: ui.ServiceLink.ip_protocol:type_name -> ui.IPProtocol
-	26, // 25: ui.ServiceLink.verdict:type_name -> flow.Verdict
-	18, // 26: ui.ServiceLink.latency:type_name -> ui.ServiceLink.Latency
-	27, // 27: ui.ServiceLink.auth_type:type_name -> flow.AuthType
-	13, // 28: ui.ServiceLinkState.service_link:type_name -> ui.ServiceLink
-	2,  // 29: ui.ServiceLinkState.type:type_name -> ui.StateChange
-	12, // 30: ui.ServiceLinkFilter.source:type_name -> ui.ServiceFilter
-	12, // 31: ui.ServiceLinkFilter.destination:type_name -> ui.ServiceFilter
-	26, // 32: ui.ServiceLinkFilter.verdict:type_name -> flow.Verdict
-	19, // 33: ui.GetControlStreamResponse.namespaces:type_name -> ui.GetControlStreamResponse.NamespaceStates
-	23, // 34: ui.GetControlStreamResponse.notification:type_name -> ui.Notification
-	28, // 35: ui.ServiceLink.Latency.min:type_name -> google.protobuf.Duration
-	28, // 36: ui.ServiceLink.Latency.max:type_name -> google.protobuf.Duration
-	28, // 37: ui.ServiceLink.Latency.avg:type_name -> google.protobuf.Duration
-	9,  // 38: ui.GetControlStreamResponse.NamespaceStates.namespaces:type_name -> ui.NamespaceState
-	3,  // 39: ui.UI.GetEvents:input_type -> ui.GetEventsRequest
-	21, // 40: ui.UI.GetStatus:input_type -> ui.GetStatusRequest
-	16, // 41: ui.UI.GetControlStream:input_type -> ui.GetControlStreamRequest
-	4,  // 42: ui.UI.GetEvents:output_type -> ui.GetEventsResponse
-	29, // 43: ui.UI.GetStatus:output_type -> ui.GetStatusResponse
-	17, // 44: ui.UI.GetControlStream:output_type -> ui.GetControlStreamResponse
-	42, // [42:45] is the sub-list for method output_type
-	39, // [39:42] is the sub-list for method input_type
-	39, // [39:39] is the sub-list for extension type_name
-	39, // [39:39] is the sub-list for extension extendee
-	0,  // [0:39] is the sub-list for field type_name
+	5,  // 0: ui.GetPoliciesResponse.policies:type_name -> ui.PolicyObject
+	13, // 1: ui.GetPoliciesResponse.services:type_name -> ui.Service
+	16, // 2: ui.GetPoliciesResponse.links:type_name -> ui.ServiceLink
+	0,  // 3: ui.GetEventsRequest.event_types:type_name -> ui.EventType
+	10, // 4: ui.GetEventsRequest.blacklist:type_name -> ui.EventFilter
+	10, // 5: ui.GetEventsRequest.whitelist:type_name -> ui.EventFilter
+	23, // 6: ui.GetEventsRequest.since:type_name -> google.protobuf.Timestamp
+	24, // 7: ui.GetEventsRequest.status_request:type_name -> ui.GetStatusRequest
+	23, // 8: ui.GetEventsResponse.timestamp:type_name -> google.protobuf.Timestamp
+	8,  // 9: ui.GetEventsResponse.events:type_name -> ui.Event
+	25, // 10: ui.Event.flow:type_name -> flow.Flow
+	12, // 11: ui.Event.namespace_state:type_name -> ui.NamespaceState
+	14, // 12: ui.Event.service_state:type_name -> ui.ServiceState
+	17, // 13: ui.Event.service_link_state:type_name -> ui.ServiceLinkState
+	9,  // 14: ui.Event.flows:type_name -> ui.Flows
+	26, // 15: ui.Event.notification:type_name -> ui.Notification
+	25, // 16: ui.Flows.flows:type_name -> flow.Flow
+	27, // 17: ui.EventFilter.flow_filter:type_name -> flow.FlowFilter
+	15, // 18: ui.EventFilter.service_filter:type_name -> ui.ServiceFilter
+	18, // 19: ui.EventFilter.service_link_filter:type_name -> ui.ServiceLinkFilter
+	23, // 20: ui.NamespaceDescriptor.creation_timestamp:type_name -> google.protobuf.Timestamp
+	11, // 21: ui.NamespaceState.namespace:type_name -> ui.NamespaceDescriptor
+	2,  // 22: ui.NamespaceState.type:type_name -> ui.StateChange
+	23, // 23: ui.Service.creation_timestamp:type_name -> google.protobuf.Timestamp
+	28, // 24: ui.Service.workloads:type_name -> flow.Workload
+	13, // 25: ui.ServiceState.service:type_name -> ui.Service
+	2,  // 26: ui.ServiceState.type:type_name -> ui.StateChange
+	1,  // 27: ui.ServiceLink.ip_protocol:type_name -> ui.IPProtocol
+	29, // 28: ui.ServiceLink.verdict:type_name -> flow.Verdict
+	21, // 29: ui.ServiceLink.latency:type_name -> ui.ServiceLink.Latency
+	30, // 30: ui.ServiceLink.auth_type:type_name -> flow.AuthType
+	16, // 31: ui.ServiceLinkState.service_link:type_name -> ui.ServiceLink
+	2,  // 32: ui.ServiceLinkState.type:type_name -> ui.StateChange
+	15, // 33: ui.ServiceLinkFilter.source:type_name -> ui.ServiceFilter
+	15, // 34: ui.ServiceLinkFilter.destination:type_name -> ui.ServiceFilter
+	29, // 35: ui.ServiceLinkFilter.verdict:type_name -> flow.Verdict
+	22, // 36: ui.GetControlStreamResponse.namespaces:type_name -> ui.GetControlStreamResponse.NamespaceStates
+	26, // 37: ui.GetControlStreamResponse.notification:type_name -> ui.Notification
+	31, // 38: ui.ServiceLink.Latency.min:type_name -> google.protobuf.Duration
+	31, // 39: ui.ServiceLink.Latency.max:type_name -> google.protobuf.Duration
+	31, // 40: ui.ServiceLink.Latency.avg:type_name -> google.protobuf.Duration
+	12, // 41: ui.GetControlStreamResponse.NamespaceStates.namespaces:type_name -> ui.NamespaceState
+	6,  // 42: ui.UI.GetEvents:input_type -> ui.GetEventsRequest
+	24, // 43: ui.UI.GetStatus:input_type -> ui.GetStatusRequest
+	19, // 44: ui.UI.GetControlStream:input_type -> ui.GetControlStreamRequest
+	3,  // 45: ui.UI.GetPolicies:input_type -> ui.GetPoliciesRequest
+	7,  // 46: ui.UI.GetEvents:output_type -> ui.GetEventsResponse
+	32, // 47: ui.UI.GetStatus:output_type -> ui.GetStatusResponse
+	20, // 48: ui.UI.GetControlStream:output_type -> ui.GetControlStreamResponse
+	4,  // 49: ui.UI.GetPolicies:output_type -> ui.GetPoliciesResponse
+	46, // [46:50] is the sub-list for method output_type
+	42, // [42:46] is the sub-list for method input_type
+	42, // [42:42] is the sub-list for extension type_name
+	42, // [42:42] is the sub-list for extension extendee
+	0,  // [0:42] is the sub-list for field type_name
 }
 
 func init() { file_ui_ui_proto_init() }
@@ -1688,7 +1956,7 @@ func file_ui_ui_proto_init() {
 	}
 	file_ui_notifications_proto_init()
 	file_ui_status_proto_init()
-	file_ui_ui_proto_msgTypes[2].OneofWrappers = []any{
+	file_ui_ui_proto_msgTypes[5].OneofWrappers = []any{
 		(*Event_Flow)(nil),
 		(*Event_NamespaceState)(nil),
 		(*Event_ServiceState)(nil),
@@ -1696,12 +1964,12 @@ func file_ui_ui_proto_init() {
 		(*Event_Flows)(nil),
 		(*Event_Notification)(nil),
 	}
-	file_ui_ui_proto_msgTypes[4].OneofWrappers = []any{
+	file_ui_ui_proto_msgTypes[7].OneofWrappers = []any{
 		(*EventFilter_FlowFilter)(nil),
 		(*EventFilter_ServiceFilter)(nil),
 		(*EventFilter_ServiceLinkFilter)(nil),
 	}
-	file_ui_ui_proto_msgTypes[14].OneofWrappers = []any{
+	file_ui_ui_proto_msgTypes[17].OneofWrappers = []any{
 		(*GetControlStreamResponse_Namespaces)(nil),
 		(*GetControlStreamResponse_Notification)(nil),
 	}
@@ -1711,7 +1979,7 @@ func file_ui_ui_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_ui_ui_proto_rawDesc), len(file_ui_ui_proto_rawDesc)),
 			NumEnums:      3,
-			NumMessages:   17,
+			NumMessages:   20,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

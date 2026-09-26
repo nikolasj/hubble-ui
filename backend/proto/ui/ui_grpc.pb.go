@@ -36,6 +36,7 @@ const (
 	UI_GetEvents_FullMethodName        = "/ui.UI/GetEvents"
 	UI_GetStatus_FullMethodName        = "/ui.UI/GetStatus"
 	UI_GetControlStream_FullMethodName = "/ui.UI/GetControlStream"
+	UI_GetPolicies_FullMethodName      = "/ui.UI/GetPolicies"
 )
 
 // UIClient is the client API for UI service.
@@ -45,6 +46,7 @@ type UIClient interface {
 	GetEvents(ctx context.Context, in *GetEventsRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[GetEventsResponse], error)
 	GetStatus(ctx context.Context, in *GetStatusRequest, opts ...grpc.CallOption) (*GetStatusResponse, error)
 	GetControlStream(ctx context.Context, in *GetControlStreamRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[GetControlStreamResponse], error)
+	GetPolicies(ctx context.Context, in *GetPoliciesRequest, opts ...grpc.CallOption) (*GetPoliciesResponse, error)
 }
 
 type uIClient struct {
@@ -103,6 +105,16 @@ func (c *uIClient) GetControlStream(ctx context.Context, in *GetControlStreamReq
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type UI_GetControlStreamClient = grpc.ServerStreamingClient[GetControlStreamResponse]
 
+func (c *uIClient) GetPolicies(ctx context.Context, in *GetPoliciesRequest, opts ...grpc.CallOption) (*GetPoliciesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetPoliciesResponse)
+	err := c.cc.Invoke(ctx, UI_GetPolicies_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UIServer is the server API for UI service.
 // All implementations must embed UnimplementedUIServer
 // for forward compatibility.
@@ -110,6 +122,7 @@ type UIServer interface {
 	GetEvents(*GetEventsRequest, grpc.ServerStreamingServer[GetEventsResponse]) error
 	GetStatus(context.Context, *GetStatusRequest) (*GetStatusResponse, error)
 	GetControlStream(*GetControlStreamRequest, grpc.ServerStreamingServer[GetControlStreamResponse]) error
+	GetPolicies(context.Context, *GetPoliciesRequest) (*GetPoliciesResponse, error)
 	mustEmbedUnimplementedUIServer()
 }
 
@@ -128,6 +141,9 @@ func (UnimplementedUIServer) GetStatus(context.Context, *GetStatusRequest) (*Get
 }
 func (UnimplementedUIServer) GetControlStream(*GetControlStreamRequest, grpc.ServerStreamingServer[GetControlStreamResponse]) error {
 	return status.Errorf(codes.Unimplemented, "method GetControlStream not implemented")
+}
+func (UnimplementedUIServer) GetPolicies(context.Context, *GetPoliciesRequest) (*GetPoliciesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetPolicies not implemented")
 }
 func (UnimplementedUIServer) mustEmbedUnimplementedUIServer() {}
 func (UnimplementedUIServer) testEmbeddedByValue()            {}
@@ -190,6 +206,24 @@ func _UI_GetControlStream_Handler(srv interface{}, stream grpc.ServerStream) err
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type UI_GetControlStreamServer = grpc.ServerStreamingServer[GetControlStreamResponse]
 
+func _UI_GetPolicies_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetPoliciesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UIServer).GetPolicies(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UI_GetPolicies_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UIServer).GetPolicies(ctx, req.(*GetPoliciesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UI_ServiceDesc is the grpc.ServiceDesc for UI service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -200,6 +234,10 @@ var UI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetStatus",
 			Handler:    _UI_GetStatus_Handler,
+		},
+		{
+			MethodName: "GetPolicies",
+			Handler:    _UI_GetPolicies_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

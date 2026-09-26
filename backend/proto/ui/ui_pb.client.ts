@@ -21,6 +21,8 @@
 import type { RpcTransport } from "@protobuf-ts/runtime-rpc";
 import type { ServiceInfo } from "@protobuf-ts/runtime-rpc";
 import { UI } from "./ui_pb";
+import type { GetPoliciesResponse } from "./ui_pb";
+import type { GetPoliciesRequest } from "./ui_pb";
 import type { GetControlStreamResponse } from "./ui_pb";
 import type { GetControlStreamRequest } from "./ui_pb";
 import type { GetStatusResponse } from "./status_pb";
@@ -47,6 +49,10 @@ export interface IUIClient {
      * @generated from protobuf rpc: GetControlStream
      */
     getControlStream(input: GetControlStreamRequest, options?: RpcOptions): ServerStreamingCall<GetControlStreamRequest, GetControlStreamResponse>;
+    /**
+     * @generated from protobuf rpc: GetPolicies
+     */
+    getPolicies(input: GetPoliciesRequest, options?: RpcOptions): UnaryCall<GetPoliciesRequest, GetPoliciesResponse>;
 }
 /**
  * @generated from protobuf service ui.UI
@@ -77,5 +83,12 @@ export class UIClient implements IUIClient, ServiceInfo {
     getControlStream(input: GetControlStreamRequest, options?: RpcOptions): ServerStreamingCall<GetControlStreamRequest, GetControlStreamResponse> {
         const method = this.methods[2], opt = this._transport.mergeOptions(options);
         return stackIntercept<GetControlStreamRequest, GetControlStreamResponse>("serverStreaming", this._transport, method, opt, input);
+    }
+    /**
+     * @generated from protobuf rpc: GetPolicies
+     */
+    getPolicies(input: GetPoliciesRequest, options?: RpcOptions): UnaryCall<GetPoliciesRequest, GetPoliciesResponse> {
+        const method = this.methods[3], opt = this._transport.mergeOptions(options);
+        return stackIntercept<GetPoliciesRequest, GetPoliciesResponse>("unary", this._transport, method, opt, input);
     }
 }

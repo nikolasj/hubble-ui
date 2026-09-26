@@ -29,6 +29,41 @@ service UI {
     rpc GetControlStream(GetControlStreamRequest) returns (
         stream GetControlStreamResponse
     );
+    rpc GetPolicies(GetPoliciesRequest) returns (GetPoliciesResponse) {}
+}
+
+// GetPoliciesRequest asks for a static access graph of a namespace built from
+// the network policies that apply to it, instead of from observed flows.
+message GetPoliciesRequest {
+    string namespace = 1;
+}
+
+message GetPoliciesResponse {
+    repeated PolicyObject policies = 1;
+    // Cards and links that describe the accesses the policies allow or deny.
+    // They reuse the service map messages so that the frontend can draw them
+    // with the same renderer.
+    repeated Service services = 2;
+    repeated ServiceLink links = 3;
+    // Non-fatal problems, e.g. a policy kind that could not be listed.
+    repeated string warnings = 4;
+}
+
+message PolicyObject {
+    // CiliumNetworkPolicy, CiliumClusterwideNetworkPolicy or NetworkPolicy
+    string kind = 1;
+    string name = 2;
+    // Empty for cluster-wide policies.
+    string namespace = 3;
+    string uid = 4;
+    string resource_version = 5;
+    string description = 6;
+    string yaml = 7;
+    // Ids of services and links in GetPoliciesResponse produced from this policy.
+    repeated string service_ids = 8;
+    repeated string link_ids = 9;
+    // Set when the policy could not be turned into a graph.
+    string parse_error = 10;
 }
 
 // Here I didn't include "follow", "until", and "number". This request assumes follow,

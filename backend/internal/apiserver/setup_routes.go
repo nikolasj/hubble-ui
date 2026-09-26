@@ -54,6 +54,14 @@ func (srv *APIServer) setRouteHandlers() error {
 			srv.wrapHandler(srv.ServiceMapStream, WrappedRouteOptions{}),
 		)
 
+	srv.router.Route("policies").
+		Middlewares([]cp.ChannelMiddleware{
+			srv.loggerMiddleware("Policies"),
+		}).
+		Oneshot(
+			srv.wrapHandler(srv.GetPolicies, WrappedRouteOptions{}),
+		)
+
 	return nil
 }
 

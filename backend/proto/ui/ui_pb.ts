@@ -22,10 +22,10 @@ import { GetStatusResponse } from "./status_pb";
 import { ServiceType } from "@protobuf-ts/runtime-rpc";
 import type { BinaryWriteOptions } from "@protobuf-ts/runtime";
 import type { IBinaryWriter } from "@protobuf-ts/runtime";
+import { WireType } from "@protobuf-ts/runtime";
 import type { BinaryReadOptions } from "@protobuf-ts/runtime";
 import type { IBinaryReader } from "@protobuf-ts/runtime";
 import { UnknownFieldHandler } from "@protobuf-ts/runtime";
-import { WireType } from "@protobuf-ts/runtime";
 import type { PartialMessage } from "@protobuf-ts/runtime";
 import { reflectionMergePartial } from "@protobuf-ts/runtime";
 import { MessageType } from "@protobuf-ts/runtime";
@@ -38,6 +38,98 @@ import { Notification } from "./notifications_pb";
 import { Flow } from "../flow/flow_pb";
 import { GetStatusRequest } from "./status_pb";
 import { Timestamp } from "../google/protobuf/timestamp_pb";
+/**
+ * GetPoliciesRequest asks for a static access graph of a namespace built from
+ * the network policies that apply to it, instead of from observed flows.
+ *
+ * @generated from protobuf message ui.GetPoliciesRequest
+ */
+export interface GetPoliciesRequest {
+    /**
+     * @generated from protobuf field: string namespace = 1
+     */
+    namespace: string;
+}
+/**
+ * @generated from protobuf message ui.GetPoliciesResponse
+ */
+export interface GetPoliciesResponse {
+    /**
+     * @generated from protobuf field: repeated ui.PolicyObject policies = 1
+     */
+    policies: PolicyObject[];
+    /**
+     * Cards and links that describe the accesses the policies allow or deny.
+     * They reuse the service map messages so that the frontend can draw them
+     * with the same renderer.
+     *
+     * @generated from protobuf field: repeated ui.Service services = 2
+     */
+    services: Service[];
+    /**
+     * @generated from protobuf field: repeated ui.ServiceLink links = 3
+     */
+    links: ServiceLink[];
+    /**
+     * Non-fatal problems, e.g. a policy kind that could not be listed.
+     *
+     * @generated from protobuf field: repeated string warnings = 4
+     */
+    warnings: string[];
+}
+/**
+ * @generated from protobuf message ui.PolicyObject
+ */
+export interface PolicyObject {
+    /**
+     * CiliumNetworkPolicy, CiliumClusterwideNetworkPolicy or NetworkPolicy
+     *
+     * @generated from protobuf field: string kind = 1
+     */
+    kind: string;
+    /**
+     * @generated from protobuf field: string name = 2
+     */
+    name: string;
+    /**
+     * Empty for cluster-wide policies.
+     *
+     * @generated from protobuf field: string namespace = 3
+     */
+    namespace: string;
+    /**
+     * @generated from protobuf field: string uid = 4
+     */
+    uid: string;
+    /**
+     * @generated from protobuf field: string resource_version = 5
+     */
+    resourceVersion: string;
+    /**
+     * @generated from protobuf field: string description = 6
+     */
+    description: string;
+    /**
+     * @generated from protobuf field: string yaml = 7
+     */
+    yaml: string;
+    /**
+     * Ids of services and links in GetPoliciesResponse produced from this policy.
+     *
+     * @generated from protobuf field: repeated string service_ids = 8
+     */
+    serviceIds: string[];
+    /**
+     * @generated from protobuf field: repeated string link_ids = 9
+     */
+    linkIds: string[];
+    /**
+     * Set when the policy could not be turned into a graph.
+     *
+     * @generated from protobuf field: string parse_error = 10
+     */
+    parseError: string;
+}
 /**
  * Here I didn't include "follow", "until", and "number". This request assumes follow,
  * and lets the client decide when to end the request, whether it's based on timestamp
@@ -526,6 +618,243 @@ export enum StateChange {
      */
     EXISTS = 4
 }
+// @generated message type with reflection information, may provide speed optimized methods
+class GetPoliciesRequest$Type extends MessageType<GetPoliciesRequest> {
+    constructor() {
+        super("ui.GetPoliciesRequest", [
+            { no: 1, name: "namespace", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<GetPoliciesRequest>): GetPoliciesRequest {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.namespace = "";
+        if (value !== undefined)
+            reflectionMergePartial<GetPoliciesRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: GetPoliciesRequest): GetPoliciesRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string namespace */ 1:
+                    message.namespace = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: GetPoliciesRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string namespace = 1; */
+        if (message.namespace !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.namespace);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ui.GetPoliciesRequest
+ */
+export const GetPoliciesRequest = new GetPoliciesRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class GetPoliciesResponse$Type extends MessageType<GetPoliciesResponse> {
+    constructor() {
+        super("ui.GetPoliciesResponse", [
+            { no: 1, name: "policies", kind: "message", repeat: 2 /*RepeatType.UNPACKED*/, T: () => PolicyObject },
+            { no: 2, name: "services", kind: "message", repeat: 2 /*RepeatType.UNPACKED*/, T: () => Service },
+            { no: 3, name: "links", kind: "message", repeat: 2 /*RepeatType.UNPACKED*/, T: () => ServiceLink },
+            { no: 4, name: "warnings", kind: "scalar", repeat: 2 /*RepeatType.UNPACKED*/, T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<GetPoliciesResponse>): GetPoliciesResponse {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.policies = [];
+        message.services = [];
+        message.links = [];
+        message.warnings = [];
+        if (value !== undefined)
+            reflectionMergePartial<GetPoliciesResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: GetPoliciesResponse): GetPoliciesResponse {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* repeated ui.PolicyObject policies */ 1:
+                    message.policies.push(PolicyObject.internalBinaryRead(reader, reader.uint32(), options));
+                    break;
+                case /* repeated ui.Service services */ 2:
+                    message.services.push(Service.internalBinaryRead(reader, reader.uint32(), options));
+                    break;
+                case /* repeated ui.ServiceLink links */ 3:
+                    message.links.push(ServiceLink.internalBinaryRead(reader, reader.uint32(), options));
+                    break;
+                case /* repeated string warnings */ 4:
+                    message.warnings.push(reader.string());
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: GetPoliciesResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* repeated ui.PolicyObject policies = 1; */
+        for (let i = 0; i < message.policies.length; i++)
+            PolicyObject.internalBinaryWrite(message.policies[i], writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        /* repeated ui.Service services = 2; */
+        for (let i = 0; i < message.services.length; i++)
+            Service.internalBinaryWrite(message.services[i], writer.tag(2, WireType.LengthDelimited).fork(), options).join();
+        /* repeated ui.ServiceLink links = 3; */
+        for (let i = 0; i < message.links.length; i++)
+            ServiceLink.internalBinaryWrite(message.links[i], writer.tag(3, WireType.LengthDelimited).fork(), options).join();
+        /* repeated string warnings = 4; */
+        for (let i = 0; i < message.warnings.length; i++)
+            writer.tag(4, WireType.LengthDelimited).string(message.warnings[i]);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ui.GetPoliciesResponse
+ */
+export const GetPoliciesResponse = new GetPoliciesResponse$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class PolicyObject$Type extends MessageType<PolicyObject> {
+    constructor() {
+        super("ui.PolicyObject", [
+            { no: 1, name: "kind", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 3, name: "namespace", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 4, name: "uid", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 5, name: "resource_version", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 6, name: "description", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 7, name: "yaml", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 8, name: "service_ids", kind: "scalar", repeat: 2 /*RepeatType.UNPACKED*/, T: 9 /*ScalarType.STRING*/ },
+            { no: 9, name: "link_ids", kind: "scalar", repeat: 2 /*RepeatType.UNPACKED*/, T: 9 /*ScalarType.STRING*/ },
+            { no: 10, name: "parse_error", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<PolicyObject>): PolicyObject {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.kind = "";
+        message.name = "";
+        message.namespace = "";
+        message.uid = "";
+        message.resourceVersion = "";
+        message.description = "";
+        message.yaml = "";
+        message.serviceIds = [];
+        message.linkIds = [];
+        message.parseError = "";
+        if (value !== undefined)
+            reflectionMergePartial<PolicyObject>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: PolicyObject): PolicyObject {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string kind */ 1:
+                    message.kind = reader.string();
+                    break;
+                case /* string name */ 2:
+                    message.name = reader.string();
+                    break;
+                case /* string namespace */ 3:
+                    message.namespace = reader.string();
+                    break;
+                case /* string uid */ 4:
+                    message.uid = reader.string();
+                    break;
+                case /* string resource_version */ 5:
+                    message.resourceVersion = reader.string();
+                    break;
+                case /* string description */ 6:
+                    message.description = reader.string();
+                    break;
+                case /* string yaml */ 7:
+                    message.yaml = reader.string();
+                    break;
+                case /* repeated string service_ids */ 8:
+                    message.serviceIds.push(reader.string());
+                    break;
+                case /* repeated string link_ids */ 9:
+                    message.linkIds.push(reader.string());
+                    break;
+                case /* string parse_error */ 10:
+                    message.parseError = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: PolicyObject, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string kind = 1; */
+        if (message.kind !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.kind);
+        /* string name = 2; */
+        if (message.name !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.name);
+        /* string namespace = 3; */
+        if (message.namespace !== "")
+            writer.tag(3, WireType.LengthDelimited).string(message.namespace);
+        /* string uid = 4; */
+        if (message.uid !== "")
+            writer.tag(4, WireType.LengthDelimited).string(message.uid);
+        /* string resource_version = 5; */
+        if (message.resourceVersion !== "")
+            writer.tag(5, WireType.LengthDelimited).string(message.resourceVersion);
+        /* string description = 6; */
+        if (message.description !== "")
+            writer.tag(6, WireType.LengthDelimited).string(message.description);
+        /* string yaml = 7; */
+        if (message.yaml !== "")
+            writer.tag(7, WireType.LengthDelimited).string(message.yaml);
+        /* repeated string service_ids = 8; */
+        for (let i = 0; i < message.serviceIds.length; i++)
+            writer.tag(8, WireType.LengthDelimited).string(message.serviceIds[i]);
+        /* repeated string link_ids = 9; */
+        for (let i = 0; i < message.linkIds.length; i++)
+            writer.tag(9, WireType.LengthDelimited).string(message.linkIds[i]);
+        /* string parse_error = 10; */
+        if (message.parseError !== "")
+            writer.tag(10, WireType.LengthDelimited).string(message.parseError);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ui.PolicyObject
+ */
+export const PolicyObject = new PolicyObject$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class GetEventsRequest$Type extends MessageType<GetEventsRequest> {
     constructor() {
@@ -1703,5 +2032,6 @@ export const GetControlStreamResponse_NamespaceStates = new GetControlStreamResp
 export const UI = new ServiceType("ui.UI", [
     { name: "GetEvents", serverStreaming: true, options: {}, I: GetEventsRequest, O: GetEventsResponse },
     { name: "GetStatus", options: {}, I: GetStatusRequest, O: GetStatusResponse },
-    { name: "GetControlStream", serverStreaming: true, options: {}, I: GetControlStreamRequest, O: GetControlStreamResponse }
+    { name: "GetControlStream", serverStreaming: true, options: {}, I: GetControlStreamRequest, O: GetControlStreamResponse },
+    { name: "GetPolicies", options: {}, I: GetPoliciesRequest, O: GetPoliciesResponse }
 ]);
