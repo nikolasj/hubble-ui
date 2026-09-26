@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import { Button, Checkbox } from '@blueprintjs/core';
+import { Button, Checkbox, Tooltip } from '@blueprintjs/core';
 import { animated } from '@react-spring/web';
 import { useDrag } from '@use-gesture/react';
 
-import { PolicyObject, PolicyKind, policyKey, shortPolicyKind } from '~/domain/policies';
+import { PolicyObject, PolicyKind, policyKey, policyKindInfo } from '~/domain/policies';
 
 import { usePanelResize } from '~/components/DetailsPanel/hooks/usePanelResize';
 import type { ResizeProps } from '~/components/DetailsPanel/hooks/usePanelResize';
@@ -61,16 +61,22 @@ export const PolicyPanel = observer(function PolicyPanel(props: Props) {
         </div>
 
         <div className={css.kinds}>
-          {kindsOrder.map(kind => (
-            <Checkbox
-              key={kind}
-              inline
-              className={css.kindToggle}
-              checked={props.visibleKinds.has(kind)}
-              label={`${shortPolicyKind(kind)} (${props.countsByKind.get(kind) ?? 0})`}
-              onChange={() => props.onToggleKind?.(kind)}
-            />
-          ))}
+          {kindsOrder.map(kind => {
+            const info = policyKindInfo(kind);
+            const count = props.countsByKind.get(kind) ?? 0;
+
+            return (
+              <Tooltip key={kind} content={info.description} placement="top">
+                <Checkbox
+                  inline
+                  className={css.kindToggle}
+                  checked={props.visibleKinds.has(kind)}
+                  label={`${info.short} (${count}) · ${info.scope}`}
+                  onChange={() => props.onToggleKind?.(kind)}
+                />
+              </Tooltip>
+            );
+          })}
         </div>
 
         <Button
@@ -104,7 +110,8 @@ export const PolicyPanel = observer(function PolicyPanel(props: Props) {
           {props.policies.map(policy => {
             const key = policyKey(policy);
             const isSelected = key === selectedKey;
-            const kind = shortPolicyKind(policy.kind);
+            const info = policyKindInfo(policy.kind);
+            const kind = info.short;
 
             return (
               <div
@@ -112,7 +119,12 @@ export const PolicyPanel = observer(function PolicyPanel(props: Props) {
                 className={classnames(css.item, { [css.selected]: isSelected })}
                 onClick={() => props.onSelect?.(isSelected ? null : key)}
               >
-                <span className={classnames(css.kind, css[kind.toLowerCase()])}>{kind}</span>
+                <span
+                  className={classnames(css.kind, css[kind.toLowerCase()])}
+                  title={info.description}
+                >
+                  {kind}
+                </span>
                 <span className={css.name} title={key}>
                   {policy.name}
                 </span>

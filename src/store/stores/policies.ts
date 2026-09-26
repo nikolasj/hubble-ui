@@ -3,12 +3,10 @@ import { makeAutoObservable } from 'mobx';
 import { HubbleService, HubbleLink } from '~/domain/hubble';
 import { PolicyObject, PolicyKind, policyKey } from '~/domain/policies';
 
-// Cluster-wide policies apply to every namespace and tend to bury the
-// namespace's own rules, so they are hidden until asked for.
-export const DEFAULT_VISIBLE_POLICY_KINDS: string[] = [
-  PolicyKind.CiliumNetworkPolicy,
-  PolicyKind.NetworkPolicy,
-];
+// Only the namespace's own Cilium policies are shown until asked for more:
+// cluster-wide policies bury them, and Kubernetes NetworkPolicies are rare
+// in clusters that write Cilium policies.
+export const DEFAULT_VISIBLE_POLICY_KINDS: string[] = [PolicyKind.CiliumNetworkPolicy];
 
 // PolicyStore keeps the policies of the namespace shown in the policy view,
 // the cards and links the backend built from them, which policy kinds the

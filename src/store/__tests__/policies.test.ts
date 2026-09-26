@@ -86,16 +86,17 @@ describe('PolicyStore', () => {
     expect(store.byKey.has('CiliumClusterwideNetworkPolicy/dns')).toBe(true);
   });
 
-  test('cluster-wide policies are hidden by default', () => {
+  test('only namespaced Cilium policies are visible by default', () => {
     const store = new PolicyStore();
     fillStore(store);
 
     expect(Array.from(store.visibleKinds)).toEqual(DEFAULT_VISIBLE_POLICY_KINDS);
-    expect(store.visiblePolicies.map(p => p.name)).toEqual(['a', 'knp']);
+    expect(store.visiblePolicies.map(p => p.name)).toEqual(['a']);
     expect(store.countsByKind.get(PolicyKind.CiliumClusterwideNetworkPolicy)).toBe(1);
+    expect(store.countsByKind.get(PolicyKind.NetworkPolicy)).toBe(1);
 
-    expect(store.visibleServices.map(s => s.id).sort()).toEqual(['svc-1', 'svc-2', 'svc-3']);
-    expect(store.visibleLinks.map(l => l.id).sort()).toEqual(['l-1', 'l-3']);
+    expect(store.visibleServices.map(s => s.id).sort()).toEqual(['svc-1', 'svc-2']);
+    expect(store.visibleLinks.map(l => l.id)).toEqual(['l-1']);
   });
 
   test('toggling a kind shows its cards and links', () => {
@@ -103,6 +104,7 @@ describe('PolicyStore', () => {
     fillStore(store);
 
     store.toggleKind(PolicyKind.CiliumClusterwideNetworkPolicy);
+    store.toggleKind(PolicyKind.NetworkPolicy);
     expect(store.visiblePolicies).toHaveLength(3);
     expect(store.visibleServices.map(s => s.id)).toContain('svc-dns');
     expect(store.visibleLinks.map(l => l.id)).toContain('l-dns');

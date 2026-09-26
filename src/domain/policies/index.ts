@@ -28,6 +28,34 @@ const shortKinds: Record<string, string> = {
   [PolicyKind.NetworkPolicy]: 'KNP',
 };
 
+export interface PolicyKindInfo {
+  short: string;
+  // Short qualifier shown next to the abbreviation
+  scope: string;
+  // Full explanation for tooltips
+  description: string;
+}
+
+const kindInfos: Record<string, PolicyKindInfo> = {
+  [PolicyKind.CiliumNetworkPolicy]: {
+    short: 'CNP',
+    scope: 'this namespace',
+    description: 'CiliumNetworkPolicy: Cilium policies that live in this namespace',
+  },
+  [PolicyKind.CiliumClusterwideNetworkPolicy]: {
+    short: 'CCNP',
+    scope: 'cluster-wide',
+    description:
+      'CiliumClusterwideNetworkPolicy: Cilium policies without a namespace that apply to every namespace, including this one',
+  },
+  [PolicyKind.NetworkPolicy]: {
+    short: 'KNP',
+    scope: 'Kubernetes',
+    description:
+      'NetworkPolicy: standard Kubernetes network policies of this namespace, enforced by Cilium as well',
+  },
+};
+
 export const policyObjectFromPb = (pb: uipb.PolicyObject): PolicyObject => {
   return {
     kind: pb.kind,
@@ -49,4 +77,8 @@ export const policyKey = (p: PolicyObject): string => {
 
 export const shortPolicyKind = (kind: string): string => {
   return shortKinds[kind] ?? kind;
+};
+
+export const policyKindInfo = (kind: string): PolicyKindInfo => {
+  return kindInfos[kind] ?? { short: kind, scope: '', description: kind };
 };
