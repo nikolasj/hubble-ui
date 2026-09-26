@@ -102,6 +102,17 @@ export class PolicyMap extends EventEmitter<Handlers> {
     await request.stop();
   }
 
+  // applyVisibility redraws the policy frame from the policies of the kinds
+  // the user wants to see. The backend response is kept as is, so toggling a
+  // kind never needs another request.
+  public applyVisibility() {
+    const { policies } = this.store;
+
+    this.store.policyFrame.replaceServiceMap(
+      ServiceMap.fromHubbleParts(policies.visibleServices, policies.visibleLinks),
+    );
+  }
+
   private handleResponse(namespace: string, resp: uipb.GetPoliciesResponse) {
     // NOTE: The user could have switched namespace while the request was in flight
     if (this.store.namespaces.currentRaw !== namespace) return;
@@ -110,8 +121,8 @@ export class PolicyMap extends EventEmitter<Handlers> {
     const links = resp.links.map(helpers.relayServiceLinkFromPb);
     const policies = resp.policies.map(policyObjectFromPb);
 
-    this.store.policyFrame.replaceServiceMap(ServiceMap.fromHubbleParts(services, links));
-    this.store.policies.setPolicies(namespace, policies, resp.warnings.slice());
+    this.store.policies.setPolicies(namespace, policies, resp.warnings.slice(), services, links);
+    this.applyVisibility();
   }
 
   private handleErrors(namespace: string, errs: CustomError[]) {

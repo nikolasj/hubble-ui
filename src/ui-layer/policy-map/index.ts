@@ -2,6 +2,7 @@ import * as mobx from 'mobx';
 
 import { Store } from '~/store';
 import { DataLayer } from '~/data-layer';
+import * as storage from '~/storage/local';
 
 import { ServiceCard } from '~/domain/service-map';
 import { Application } from '~/domain/common';
@@ -35,7 +36,19 @@ export class PolicyMap {
     this.placement = new ServiceMapPlacementStrategy(this.store.policyFrame);
     this.arrows = new ServiceMapArrowStrategy(this.store.policyFrame, this.placement);
 
+    const visibleKinds = storage.getPolicyVisibleKinds();
+    if (visibleKinds != null) {
+      this.store.policies.setVisibleKinds(visibleKinds);
+    }
+
     this.setupEventHandlers();
+  }
+
+  public toggleKind(kind: string) {
+    this.store.policies.toggleKind(kind);
+    storage.savePolicyVisibleKinds(this.store.policies.visibleKinds);
+
+    this.dataLayer.policyMap.applyVisibility();
   }
 
   // NOTE: Clicking a card selects the policy that produced it. Repeated clicks

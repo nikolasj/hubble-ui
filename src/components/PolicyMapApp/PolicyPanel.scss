@@ -33,6 +33,18 @@
   color: #5c7080;
 }
 
+.kinds {
+  @include row(center, center);
+  flex: 1;
+  margin: 0 12px;
+}
+
+.kindToggle {
+  margin: 0 8px;
+  font-size: 12px;
+  color: #5c7080;
+}
+
 .content {
   @include row(flex-start, stretch);
   flex: 1;

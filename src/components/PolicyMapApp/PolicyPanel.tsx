@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import { Button } from '@blueprintjs/core';
+import { Button, Checkbox } from '@blueprintjs/core';
 import { animated } from '@react-spring/web';
 import { useDrag } from '@use-gesture/react';
 
-import { PolicyObject, policyKey, shortPolicyKind } from '~/domain/policies';
+import { PolicyObject, PolicyKind, policyKey, shortPolicyKind } from '~/domain/policies';
 
 import { usePanelResize } from '~/components/DetailsPanel/hooks/usePanelResize';
 import type { ResizeProps } from '~/components/DetailsPanel/hooks/usePanelResize';
@@ -14,15 +14,26 @@ import css from './PolicyPanel.scss';
 
 export interface Props {
   namespace: string | null;
+  // Policies of the kinds the user wants to see
   policies: PolicyObject[];
+  totalCount: number;
+  countsByKind: Map<string, number>;
+  visibleKinds: Set<string>;
   selected: PolicyObject | null;
   warnings: string[];
   error: string | null;
   isLoading: boolean;
   onSelect?: (key: string | null) => void;
+  onToggleKind?: (kind: string) => void;
   onRefresh?: () => void;
   onPanelResize?: (resizeProps: ResizeProps) => void;
 }
+
+const kindsOrder = [
+  PolicyKind.CiliumNetworkPolicy,
+  PolicyKind.CiliumClusterwideNetworkPolicy,
+  PolicyKind.NetworkPolicy,
+];
 
 // PolicyPanel lists the policies of the namespace and shows the YAML of the
 // selected one. It sits where the flows table is in the service map.
@@ -45,7 +56,21 @@ export const PolicyPanel = observer(function PolicyPanel(props: Props) {
     <div className={css.panel} ref={panelResize.ref} style={panelResize.style}>
       <animated.div {...bind()} className={css.handle}>
         <div className={css.title}>
-          Network policies{props.namespace ? ` in ${props.namespace}` : ''}: {props.policies.length}
+          Network policies{props.namespace ? ` in ${props.namespace}` : ''}: {props.policies.length}{' '}
+          of {props.totalCount}
+        </div>
+
+        <div className={css.kinds}>
+          {kindsOrder.map(kind => (
+            <Checkbox
+              key={kind}
+              inline
+              className={css.kindToggle}
+              checked={props.visibleKinds.has(kind)}
+              label={`${shortPolicyKind(kind)} (${props.countsByKind.get(kind) ?? 0})`}
+              onChange={() => props.onToggleKind?.(kind)}
+            />
+          ))}
         </div>
 
         <Button
@@ -69,7 +94,11 @@ export const PolicyPanel = observer(function PolicyPanel(props: Props) {
           ))}
 
           {showEmptyHint && (
-            <div className={css.hint}>No network policies apply to this namespace</div>
+            <div className={css.hint}>
+              {props.totalCount > 0
+                ? 'All policies here are of hidden kinds, enable them above'
+                : 'No network policies apply to this namespace'}
+            </div>
           )}
 
           {props.policies.map(policy => {

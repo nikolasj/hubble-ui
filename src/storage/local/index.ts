@@ -20,6 +20,7 @@ const DETAILS_PANEL_POS = '@hubble-ui/panel-position';
 const DATA_MODE = '@hubble-ui/data-mode';
 const CLUSTERWIDE_ENABLED = '@hubble-ui/clusterwide-enabled';
 const THEME_PREFERENCE_KEY = '@hubble-ui/theme-preference';
+const POLICY_VISIBLE_KINDS_KEY = '@hubble-ui/policy-visible-kinds';
 
 export function getLastNamespace(): string | null {
   return localStorage.getItem(LAST_NAMESPACE_KEY);
@@ -171,6 +172,20 @@ export function getClusterwideEnabled() {
 
 export function saveClusterwideEnabled(val: boolean) {
   localStorage.setItem(CLUSTERWIDE_ENABLED, val ? 'true' : 'false');
+}
+
+export function getPolicyVisibleKinds(): Set<string> | null {
+  const val = localStorage.getItem(POLICY_VISIBLE_KINDS_KEY);
+  if (!val) return null;
+
+  const arr = JSON.parse(val);
+  if (!Array.isArray(arr)) return null;
+
+  return new Set<string>(arr);
+}
+
+export function savePolicyVisibleKinds(kinds: Set<string>) {
+  localStorage.setItem(POLICY_VISIBLE_KINDS_KEY, JSON.stringify(Array.from(kinds)));
 }
 
 export function getThemePreference() {

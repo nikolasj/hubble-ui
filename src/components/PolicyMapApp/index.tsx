@@ -44,6 +44,10 @@ export const PolicyMapApp = observer(function PolicyMapApp() {
     dataLayer.policyMap.refetch();
   }, []);
 
+  const onToggleKind = useCallback((kind: string) => {
+    ui.policyMap.toggleKind(kind);
+  }, []);
+
   const onPanelResize = useCallback((resizeProps: ResizeProps) => {
     const vh = resizeProps.panelTopInPixels - sizes.topBarHeight;
     setMapVisibleHeight(vh);
@@ -112,10 +116,13 @@ export const PolicyMapApp = observer(function PolicyMapApp() {
 
   let overlayText = 'Loading network policies…';
   if (!policies.isLoading) {
-    overlayText =
-      policies.error != null
-        ? `Failed to load network policies: ${policies.error}`
-        : `No network policy grants or denies anything in ${namespace} namespace`;
+    if (policies.error != null) {
+      overlayText = `Failed to load network policies: ${policies.error}`;
+    } else if (policies.policies.length > 0 && policies.visiblePolicies.length === 0) {
+      overlayText = 'All policies of this namespace are of hidden kinds, enable them below';
+    } else {
+      overlayText = `No network policy grants or denies anything in ${namespace} namespace`;
+    }
   }
 
   return (
@@ -148,12 +155,16 @@ export const PolicyMapApp = observer(function PolicyMapApp() {
 
       <PolicyPanel
         namespace={namespace}
-        policies={policies.policies}
+        policies={policies.visiblePolicies}
+        totalCount={policies.policies.length}
+        countsByKind={policies.countsByKind}
+        visibleKinds={policies.visibleKinds}
         selected={policies.selected}
         warnings={policies.warnings}
         error={policies.error}
         isLoading={policies.isLoading}
         onSelect={onPolicySelect}
+        onToggleKind={onToggleKind}
         onRefresh={onRefresh}
         onPanelResize={onPanelResize}
       />
