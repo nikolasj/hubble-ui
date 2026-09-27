@@ -46,6 +46,10 @@ func (srv *APIServer) ServiceMapStream(
 		return ch.TerminateStatus(http.StatusBadRequest)
 	}
 
+	if err := srv.authorizer.CheckFlowsRequest(rctx, req); err != nil {
+		return err
+	}
+
 	relayClient := srv.clients.RelayClient()
 
 	eventsRequested := api_helpers.GetFlagsWhichEventsRequested(req.GetEventTypes())

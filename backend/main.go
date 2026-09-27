@@ -27,6 +27,13 @@ func main() {
 		TLSToRelayClientKeyFile:  config.StrOr("TLS_RELAY_CLIENT_KEY_FILE", ""),
 		E2ETestModeEnabled:       config.BoolOr("E2E_TEST_MODE", false),
 		E2ELogfilesBasepath:      config.StrOr("E2E_LOGFILES_BASEPATH", ""),
+		AuthzPolicyFile:          config.StrOr("AUTHZ_POLICY_FILE", ""),
+		AuthzUserHeaders: config.StrOr(
+			"AUTHZ_USER_HEADERS",
+			"x-auth-request-email,x-auth-request-preferred-username,x-auth-request-user",
+		),
+		AuthzGroupsHeader:    config.StrOr("AUTHZ_GROUPS_HEADER", "x-auth-request-groups"),
+		AuthzGroupsSeparator: config.StrOr("AUTHZ_GROUPS_SEPARATOR", ","),
 	}).Build()
 
 	if err != nil {

@@ -46,7 +46,19 @@ type Config struct {
 	TLSRelayClientCertFile string
 	TLSRelayClientKeyFile  string
 
+	// Namespace access control. Empty AuthzPolicyFile disables it, otherwise
+	// the identity headers set by the authentication proxy decide which
+	// namespaces a user may see.
+	AuthzPolicyFile      string
+	AuthzUserHeaders     []string
+	AuthzGroupsHeader    string
+	AuthzGroupsSeparator string
+
 	relayClientConfig certloader.ClientConfigBuilder
+}
+
+func (cfg *Config) AuthzEnabled() bool {
+	return cfg.AuthzPolicyFile != ""
 }
 
 func New(log *slog.Logger, propGetters PropGetters) *ConfigBuilder {

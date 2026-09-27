@@ -23,6 +23,10 @@ type PropGetters struct {
 	ClientPollDelays         []time.Duration
 	E2ETestModeEnabled       EnvVarGetter[bool]
 	E2ELogfilesBasepath      EnvVarGetter[string]
+	AuthzPolicyFile          EnvVarGetter[string]
+	AuthzUserHeaders         EnvVarGetter[string]
+	AuthzGroupsHeader        EnvVarGetter[string]
+	AuthzGroupsSeparator     EnvVarGetter[string]
 }
 
 type EnvVarGetter[T any] func() EnvVarResult[T]

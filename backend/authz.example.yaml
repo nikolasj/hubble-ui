@@ -1,0 +1,18 @@
+# Namespace access map for the hubble-ui backend.
+#
+# Enable it with AUTHZ_POLICY_FILE=/path/to/this/file. The backend then reads
+# the user from the identity headers set by the authentication proxy in front
+# of hubble-ui (AUTHZ_USER_HEADERS, AUTHZ_GROUPS_HEADER) and shows a user only
+# the namespaces granted by the rules that match them. No matching rule means
+# no namespaces at all.
+#
+# Namespaces are glob patterns as in Go's path.Match; "*" grants everything.
+rules:
+  - groups: ["platform-admins"]
+    namespaces: ["*"]
+
+  - groups: ["team-payments"]
+    namespaces: ["payments", "payments-*"]
+
+  - users: ["alice@example.com"]
+    namespaces: ["sandbox-alice"]

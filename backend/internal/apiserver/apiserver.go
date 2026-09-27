@@ -26,6 +26,7 @@ type APIServer struct {
 	baseContext       context.Context
 	clients           api_clients.APIClientsInterface
 	handlerMiddleware HttpHandlerMiddleware
+	authorizer        *Authorizer
 
 	instance *http.Server
 	router   *router.Router
@@ -68,6 +69,11 @@ func New(
 		bctx = context.Background()
 	}
 
+	authorizer, err := newAuthorizer(cfg, log.With(slog.String("component", "Authorizer")))
+	if err != nil {
+		return nil, err
+	}
+
 	srv := &APIServer{
 		log:               log,
 		cfg:               cfg,
@@ -76,6 +82,7 @@ func New(
 		baseContext:       bctx,
 		clients:           clients,
 		handlerMiddleware: handlerMiddleware,
+		authorizer:        authorizer,
 	}
 
 	if err := srv.prepareRoutes(); err != nil {

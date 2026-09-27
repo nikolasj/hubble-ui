@@ -41,6 +41,7 @@ func (srv *APIServer) setRouteHandlers() error {
 	srv.router.Route("control-stream").
 		Middlewares([]cp.ChannelMiddleware{
 			srv.loggerMiddleware("ControlStream"),
+			srv.authzMiddleware(),
 		}).
 		Stream(
 			srv.wrapHandler(srv.ControlStream, WrappedRouteOptions{}),
@@ -49,6 +50,7 @@ func (srv *APIServer) setRouteHandlers() error {
 	srv.router.Route("service-map-stream").
 		Middlewares([]cp.ChannelMiddleware{
 			srv.loggerMiddleware("ServiceMapStream"),
+			srv.authzMiddleware(),
 		}).
 		Stream(
 			srv.wrapHandler(srv.ServiceMapStream, WrappedRouteOptions{}),
@@ -57,6 +59,7 @@ func (srv *APIServer) setRouteHandlers() error {
 	srv.router.Route("policies").
 		Middlewares([]cp.ChannelMiddleware{
 			srv.loggerMiddleware("Policies"),
+			srv.authzMiddleware(),
 		}).
 		Oneshot(
 			srv.wrapHandler(srv.GetPolicies, WrappedRouteOptions{}),

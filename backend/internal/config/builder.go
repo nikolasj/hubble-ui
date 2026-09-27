@@ -44,7 +44,60 @@ func (b *ConfigBuilder) Build() (*Config, error) {
 		return nil, err
 	}
 
+	if err := b.initAuthz(cfg); err != nil {
+		return nil, err
+	}
+
 	return cfg, nil
+}
+
+func (b *ConfigBuilder) initAuthz(cfg *Config) error {
+	policyFile := b.props.AuthzPolicyFile()
+	if err := policyFile.Err(); err != nil {
+		return err
+	}
+
+	policyFile.LogIfFallback(b.logger)
+	cfg.AuthzPolicyFile = policyFile.Value
+
+	if !cfg.AuthzEnabled() {
+		b.logger.Info("namespace access control is not enabled")
+		return nil
+	}
+
+	userHeaders := b.props.AuthzUserHeaders()
+	if err := userHeaders.Err(); err != nil {
+		return err
+	}
+
+	groupsHeader := b.props.AuthzGroupsHeader()
+	if err := groupsHeader.Err(); err != nil {
+		return err
+	}
+
+	separator := b.props.AuthzGroupsSeparator()
+	if err := separator.Err(); err != nil {
+		return err
+	}
+
+	userHeaders.LogIfFallback(b.logger)
+	groupsHeader.LogIfFallback(b.logger)
+	separator.LogIfFallback(b.logger)
+
+	cfg.AuthzUserHeaders = b.separatedStringList(userHeaders.Value, ",")
+	cfg.AuthzGroupsHeader = groupsHeader.Value
+	cfg.AuthzGroupsSeparator = separator.Value
+
+	if len(cfg.AuthzUserHeaders) == 0 {
+		return b.err("authz user headers")
+	}
+
+	b.logger.Info("namespace access control is enabled",
+		"policy-file", cfg.AuthzPolicyFile,
+		"user-headers", cfg.AuthzUserHeaders,
+		"groups-header", cfg.AuthzGroupsHeader)
+
+	return nil
 }
 
 func (b *ConfigBuilder) initLogger() error {

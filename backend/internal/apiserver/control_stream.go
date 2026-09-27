@@ -22,6 +22,10 @@ func (srv *APIServer) ControlStream(
 ) error {
 	log, ctx := rctx.Log, ch.Context()
 
+	if err := srv.authorizer.Precheck(rctx); err != nil {
+		return err
+	}
+
 	nsWatcher, err := srv.clients.NSWatcher(ctx, ns_watcher.NSWatcherOptions{
 		Log: log.With(slog.String("component", "ControlStream.NSWatcher")),
 	})
@@ -72,7 +76,11 @@ F:
 			log.Debug("pushing ns event")
 			nsDebounce.Touch()
 		case <-nsDebounce.Triggered():
-			nss := dataStash.FlushNamespaces()
+			nss := srv.authorizer.FilterNSEvents(rctx, dataStash.FlushNamespaces())
+			if len(nss) == 0 {
+				break
+			}
+
 			nsResponse := responseFromNSEvents(nss)
 			log.Debug("namespaces debounce triggered", "response", nsResponse, "len(nss)", len(nss))
 

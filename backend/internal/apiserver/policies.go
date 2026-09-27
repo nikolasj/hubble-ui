@@ -32,6 +32,10 @@ func (srv *APIServer) GetPolicies(ch *cp.Channel, rctx *req_context.Context) err
 		return status.Error(codes.InvalidArgument, "namespace is required")
 	}
 
+	if err := srv.authorizer.CheckNamespace(rctx, namespace); err != nil {
+		return err
+	}
+
 	listed, err := srv.clients.ListNamespacePolicies(ctx, namespace)
 	if err != nil {
 		if api_helpers.IsK8sResourcePermissionsError(err) {
