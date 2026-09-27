@@ -7,12 +7,17 @@
 # no namespaces at all.
 #
 # Namespaces are glob patterns as in Go's path.Match; "*" grants everything.
+# groupPattern is a regular expression over the user's groups, and ${1} in the
+# namespaces stands for the captured part of the group name (lowercased).
 rules:
-  - groups: ["platform-admins"]
+  # the platform team sees everything
+  - groups: ["devops"]
     namespaces: ["*"]
 
-  - groups: ["team-payments"]
-    namespaces: ["payments", "payments-*"]
+  # members of development-<team> see <team> and <team>-* without being listed
+  - groupPattern: "^development-(.+)$"
+    namespaces: ["${1}", "${1}-*"]
 
+  # explicit grants still work
   - users: ["alice@example.com"]
     namespaces: ["sandbox-alice"]

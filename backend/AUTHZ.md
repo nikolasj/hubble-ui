@@ -28,6 +28,24 @@ sees no namespaces.
 Users and groups are compared case-insensitively. Namespace entries are glob
 patterns as in Go's `path.Match`.
 
+## Dynamic rules
+
+A rule with `groupPattern` needs no list of people. The pattern is a regular
+expression matched against every group of the user, and the namespaces are
+templates where `${1}`, `${2}`... are the captured parts of the group name,
+lowercased. Adding someone to an LDAP group is all it takes:
+
+```yaml
+rules:
+  - groups: ["devops"]
+    namespaces: ["*"]
+  - groupPattern: "^development-(.+)$"
+    namespaces: ["${1}", "${1}-*"]
+```
+
+A member of `development-payments` sees `payments` and `payments-*`, a member
+of two such groups sees both sets, `devops` sees everything.
+
 ## Requirements
 
 - The hubble-ui pod must only be reachable through the authentication proxy.

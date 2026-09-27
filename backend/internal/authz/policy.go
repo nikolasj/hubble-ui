@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path"
+	"regexp"
 	"strings"
 
 	"sigs.k8s.io/yaml"
@@ -36,10 +37,20 @@ func (id Identity) String() string {
 
 // Rule grants the listed namespaces to the listed users and groups. Namespace
 // entries are glob patterns as in path.Match, "*" grants every namespace.
+//
+// GroupPattern makes a rule dynamic: it is a regular expression matched
+// against every group of the user, and the namespaces are then templates
+// where ${1}, ${2}... stand for the captured parts of the group name. So
+// "^development-(.+)$" with namespaces ["${1}", "${1}-*"] grants the members
+// of development-payments the namespaces payments and payments-*, without
+// listing anyone. Matching is case-insensitive.
 type Rule struct {
-	Users      []string `json:"users,omitempty"`
-	Groups     []string `json:"groups,omitempty"`
-	Namespaces []string `json:"namespaces"`
+	Users        []string `json:"users,omitempty"`
+	Groups       []string `json:"groups,omitempty"`
+	GroupPattern string   `json:"groupPattern,omitempty"`
+	Namespaces   []string `json:"namespaces"`
+
+	groupRegexp *regexp.Regexp
 }
 
 // Policy is the static namespace access map. The union of all rules matching
@@ -75,12 +86,21 @@ func (p *Policy) Validate() error {
 	for i := range p.Rules {
 		rule := &p.Rules[i]
 
-		if len(rule.Users) == 0 && len(rule.Groups) == 0 {
+		if len(rule.Users) == 0 && len(rule.Groups) == 0 && rule.GroupPattern == "" {
 			return fmt.Errorf("rule %d: %w", i, errRuleWithoutSubject)
 		}
 
 		if len(rule.Namespaces) == 0 {
 			return fmt.Errorf("rule %d: %w", i, errRuleWithoutNS)
+		}
+
+		if rule.GroupPattern != "" {
+			re, err := regexp.Compile("(?i)" + rule.GroupPattern)
+			if err != nil {
+				return fmt.Errorf("rule %d: invalid group pattern %q: %w", i, rule.GroupPattern, err)
+			}
+
+			rule.groupRegexp = re
 		}
 
 		for _, pattern := range rule.Namespaces {
@@ -98,9 +118,7 @@ func (p *Policy) Patterns(id Identity) []string {
 	patterns := []string{}
 
 	for i := range p.Rules {
-		if p.Rules[i].matches(id) {
-			patterns = append(patterns, p.Rules[i].Namespaces...)
-		}
+		patterns = append(patterns, p.Rules[i].patternsFor(id)...)
 	}
 
 	return patterns
@@ -135,7 +153,37 @@ func (p *Policy) Allows(id Identity, namespace string) bool {
 	return false
 }
 
-func (r *Rule) matches(id Identity) bool {
+// patternsFor returns the namespace patterns this rule grants to the
+// identity: the plain ones when a user or group is listed, and one expanded
+// set per group that matches the group pattern.
+func (r *Rule) patternsFor(id Identity) []string {
+	patterns := []string{}
+
+	if r.matchesExact(id) {
+		patterns = append(patterns, r.Namespaces...)
+	}
+
+	if r.groupRegexp == nil {
+		return patterns
+	}
+
+	for _, group := range id.Groups {
+		match := r.groupRegexp.FindStringSubmatchIndex(group)
+		if match == nil {
+			continue
+		}
+
+		for _, template := range r.Namespaces {
+			expanded := r.groupRegexp.ExpandString(nil, template, group, match)
+			// Namespace names are lowercase DNS labels, group names are not
+			patterns = append(patterns, strings.ToLower(string(expanded)))
+		}
+	}
+
+	return patterns
+}
+
+func (r *Rule) matchesExact(id Identity) bool {
 	for _, user := range r.Users {
 		if user != "" && strings.EqualFold(user, id.User) {
 			return true
